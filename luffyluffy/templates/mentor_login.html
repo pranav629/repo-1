@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.37.2/tsparticles.min.js"></script>
+    <style>
+        /* === Base Styles === */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f6f9fb;
+            color: #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #2c3e50;
+            text-decoration: underline;
+        }
+
+        /* === Layout === */
+        .container {
+            width: 400px;
+            padding: 30px;
+            background: #ffffff;
+            border: 2px solid #a1c4fd;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .container:hover {
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        input:-webkit-autofill {
+            box-shadow: 0 0 0px 1000px white inset !important; /* replace white with your input background color */
+            -webkit-text-fill-color: #000 !important;
+        }
+        
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #a1c4fd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.4);
+        }
+
+        button {
+            width: 95%;
+            background: linear-gradient(135deg, #4a90e2, #357ab8);
+            color: white;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 17px;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        p a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        p a:hover {
+            color: #2c3e50;
+            text-decoration: underline;
+        }
+
+        /* === Particle.js Canvas === */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particles.js Background -->
+    <div id="particles-js"></div>
+
+    <!-- Mentor Login Form -->
+    <form class="container" method="POST">
+        {% csrf_token %}
+        <h2>Mentor Login</h2>
+        <p class="error-message">{{message}}</p>
+        <input type="email" id="login-email" placeholder="Enter your email" name="email" value="{{email}}" required>
+        <input type="password" id="login-password" placeholder="Enter your password" name="password" required>
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="mentor-signup/">Signup</a></p>
+    </form>
+
+    <script>
+        // Initialize particles.js for moving particles effect
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 200,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#b0bec5"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000"
+                    }
+                },
+                "opacity": {
+                    "value": 0.8,
+                    "random": true
+                },
+                "size": {
+                    "value": 3,
+                    "random": true
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#b0bec5",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "attract": {
+                        "enable": false
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 200,
+                        "line_linked": {
+                            "opacity": 0.5
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 10,
+                        "duration": 2,
+                        "opacity": 0.8,
+                        "speed": 3
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
+</body>
+</html>

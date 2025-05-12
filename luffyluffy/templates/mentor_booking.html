@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book a Mentor</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6f9fb;
+      color: #555;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 30px 20px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c3e50;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-link {
+      background: #4a90e2;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .dashboard-link:hover {
+      background: #357ab8;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 90%;
+      background: #fff;
+      padding: 30px;
+      margin: 40px auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      z-index: 1;
+    }
+
+    .mentor-card {
+      display: flex;
+      flex-direction: column;
+      background: #f6f9fb;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .mentor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .mentor-details h3 {
+      margin: 0 0 8px;
+      color: #2c3e50;
+      font-size: 20px;
+    }
+
+    .mentor-details p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .input-fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .input-fields input[type="date"],
+    .input-fields input[type="time"],
+    .input-fields textarea,
+    .mentor-details input[type="email"] {
+      flex: 1 1 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: #fff;
+      resize: none;
+    }
+
+    .mentor-details input[readonly] {
+      background-color: #e3f2fd;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    textarea::placeholder {
+      color: #999;
+    }
+
+    .book-btn {
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .book-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .input-fields {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="particles-js"></div>
+
+  <header>
+    Book a Mentor
+    <a href="{% url 'entrepreneur_dashboard'%}" class="dashboard-link">Go to Dashboard</a>
+  </header>
+
+  <div class="container">
+    {% for i in mentors %}
+      <form class="mentor-card" method="POST">
+        {% csrf_token %}
+        <div class="mentor-details">
+          <h3>{{ i.name }}</h3>
+          <input type="email" value="{{ i.email }}" name="mentoremail" readonly>
+          <p>{{ i.professional_title }} | {{ i.years_experience }} Years Experience</p>
+          <p>Availability {{ i.availability }} </p>
+        </div>
+        <div class="input-fields">
+          <input type="date" name="date_1" class="date-input" required>
+          <input type="time" name="time_1" class="time-input" required>
+          <textarea name="idea_abstract" rows="4" placeholder="Enter a brief abstract of your idea..." required></textarea>
+          <button class="book-btn" type="submit">Book Now</button>
+        </div>
+        
+      </form>
+    {% empty %}
+      <p style="text-align:center">No Mentors available</p>
+    {% endfor %}
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 300,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#b0bec5"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000"
+            }
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": true
+          },
+          "size": {
+            "value": 3,
+            "random": true
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#b0bec5",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out"
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 200,
+              "line_linked": {
+                "opacity": 0.5
+              }
+            },
+            "push": {
+              "particles_nb": 4
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    });
+  </script>
+
+</body>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${yyyy}-${mm}-${dd}`;
+
+    // Apply min date for all date inputs
+    document.querySelectorAll('.date-input').forEach(dateInput => {
+      dateInput.setAttribute('min', todayStr);
+
+      dateInput.addEventListener('change', function () {
+        const selectedDate = new Date(this.value);
+        const timeInput = this.closest('.input-fields').querySelector('.time-input');
+
+        if (this.value === todayStr) {
+          const now = new Date();
+          const currentHours = String(now.getHours()).padStart(2, '0');
+          const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+          const currentTimeStr = `${currentHours}:${currentMinutes}`;
+          timeInput.setAttribute('min', currentTimeStr);
+        } else {
+          timeInput.removeAttribute('min');
+        }
+      });
+    });
+  });
+</script>
+
+</html>

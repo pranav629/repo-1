@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StartupX</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f6f9fb;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      top: 0;
+      left: 0;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      background-color: rgba(168, 192, 230, 0.9);
+      padding: 80px 20px 60px;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+
+    header h1 {
+      font-size: 3.2rem;
+      position: relative;
+      z-index: 3;
+      color: #2c3e50;
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      margin-top: 12px;
+      color: #34495e;
+      z-index: 3;
+      position: relative;
+    }
+
+    /* Floating icons */
+    .floating-icon {
+      position: absolute;
+      font-size: 2.2rem;
+      opacity: 0.5;
+      animation: floatUpDown 7s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Spread and position icons higher to avoid overlap */
+    .icon1  { top: 10px; left: 5%; animation-delay: 0s; }
+    .icon2  { top: 5px; left: 15%; animation-delay: 1s; }
+    .icon3  { top: 0px; left: 25%; animation-delay: 2s; }
+    .icon4  { top: 5px; left: 35%; animation-delay: 1.5s; }
+    .icon5  { top: 10px; left: 45%; animation-delay: 2.5s; }
+    .icon6  { top: 0px; left: 55%; animation-delay: 0.8s; }
+    .icon7  { top: 5px; left: 65%; animation-delay: 1.8s; }
+    .icon8  { top: 10px; left: 75%; animation-delay: 3s; }
+    .icon9  { top: 0px; left: 85%; animation-delay: 2.2s; }
+    .icon10 { top: 5px; left: 95%; animation-delay: 2.8s; }
+
+    .icon1::before  { content: "💡"; }
+    .icon2::before  { content: "🚀"; }
+    .icon3::before  { content: "📉"; }
+    .icon4::before  { content: "🎯"; }
+    .icon5::before  { content: "⚙"; }
+    .icon6::before  { content: "🧠"; }
+    .icon7::before  { content: "💬"; }
+    .icon8::before  { content: "🛠"; }
+    .icon9::before  { content: "🔍"; }
+    .icon10::before { content: "📝"; }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+      width: 280px;
+      padding: 25px;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card h3 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 1rem;
+    }
+
+    .cta {
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .cta a {
+      text-decoration: none;
+      background-color: #3498db;
+      color: white;
+      padding: 14px 30px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+
+    .cta a:hover {
+      background-color: #2980b9;
+    }
+
+    .footer {
+      margin-bottom: 40px;
+      font-size: 1rem;
+      color: #555;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        width: 90%;
+      }
+      header h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      .cta a {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <header>
+    <!-- Floating Background Icons -->
+    <div class="floating-icon icon1"></div>
+    <div class="floating-icon icon2"></div>
+    <div class="floating-icon icon3"></div>
+    <div class="floating-icon icon4"></div>
+    <div class="floating-icon icon5"></div>
+    <div class="floating-icon icon6"></div>
+    <div class="floating-icon icon7"></div>
+    <div class="floating-icon icon8"></div>
+    <div class="floating-icon icon9"></div>
+    <div class="floating-icon icon10"></div>
+
+    <h1>StartUpX</h1>
+    <p class="tagline">One-stop platform for start-up growth and support</p>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h3>Failure Vault</h3>
+      <p>Learn from failed start-ups by browsing real-world stories and common pitfalls.</p>
+    </div>
+    <div class="card">
+      <h3>Online Pitch Desk</h3>
+      <p>Pitch your ideas and get reviewed by mentors and investors online.</p>
+    </div>
+    <div class="card">
+      <h3>Mentor Calls</h3>
+      <p>Schedule live calls with experts in entrepreneurship, legal, finance, and more.</p>
+    </div>
+    <div class="card">
+      <h3>Targeted Surveys</h3>
+      <p>Get product feedback by launching surveys to your target demographic.</p>
+    </div>
+  </div>
+
+  <div class="cta">
+    <a href="home/">Get Started</a>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 StartUpX. All rights reserved.</p>
+  </div>
+
+  <!-- Particle.js Script -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 300,
+          "density": {
+            "enable": true,
+            "value_area": 900
+          }
+        },
+        "color": {
+          "value": "#b0bec5"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000"
+          }
+        },
+        "opacity": {
+          "value": 0.8,
+          "random": true
+        },
+        "size": {
+          "value": 3,
+          "random": true
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#b0bec5",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": false,
+            "mode": "grab"
+          },
+          "onclick": {
+            "enable": false,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 200,
+            "line_linked": {
+              "opacity": 0.5
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 10,
+            "duration": 2,
+            "opacity": 0.8,
+            "speed": 3
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>

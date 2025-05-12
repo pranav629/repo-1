@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Failure Vault - Animated Edition</title>
+
+  <!-- Particle.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <style>
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3eff9, #f6f9fb);
+      color: #2c3e50;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Particles background */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      background: linear-gradient(135deg, #e3eff9, #f6f9fb);
+    }
+
+    /* Content layering */
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    header {
+      background-color: #e3eff9;
+      backdrop-filter: blur(10px);
+      padding: 25px 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #2c3e50;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      color: #607d8b;
+    }
+
+    /* Intro Section */
+    .intro {
+      padding: 60px 0 30px;
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      color: #555;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Features Section */
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px 0;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      padding: 30px;
+      flex: 1 1 300px;
+      transition: all 0.4s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+
+    .feature-card p {
+      color: #333;
+      font-size: 1rem;
+    }
+
+    /* CTA Section */
+    .cta {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .cta a button {
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      border: none;
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(74, 144, 226, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .cta a button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #357ab8, #4a90e2);
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(240, 244, 248, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+      border-top: 1px solid rgba(200, 220, 240, 0.4);
+      margin-top: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
+      .back-btn {
+        position: absolute;
+        left: 20px;
+        top: 22px;
+        color: #3498db;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+      }
+      .back-btn:hover {
+        color: #2c3e50;
+      }
+      .back-btn i {
+        margin-right: 5px;
+      }
+
+      .feature-card {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <header>
+      <a href="{%url 'entrepreneur_dashboard'%}" class="back-btn"><i>←</i> Back to Dashboard</a>
+      <div class="container">
+        
+        <h1>Failure Vault</h1>
+        <p>Learn from real startup mistakes</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <h2>Why Failure Vault?</h2>
+        <p>Most platforms celebrate successes. We showcase the untold failures, so you can build smarter, faster, and better.</p>
+      </section>
+
+      <section class="features">
+        <div class="feature-card">
+          <h3>Curated Failure Library</h3>
+          <p>Discover real startup failures sorted by industry, funding stage, and model — all in one place.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Personalized Search</h3>
+          <p>Filter critical mistakes that resonate with your startup journey and avoid common pitfalls.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Share Anonymously</h3>
+          <p>Help others by sharing your lessons without revealing your identity. Everyone wins.</p>
+        </div>
+      </section>
+
+      <!-- ... existing code above remains unchanged ... -->
+
+<section class="cta">
+  <h2>Explore. Learn. Evolve.</h2>
+  <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+    <a href="browse/"><button>Start Browsing</button></a>
+    <a href="submit/"><button>Post Failure</button></a>
+    <a href="stories/"><button>View Entrepreneur-Posted Failures</button></a>
+  </div>
+</section>
+
+<!-- ... remaining code stays the same ... -->
+
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Failure Vault. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <!-- Initialize Particles -->
+  <script>
+    particlesJS('particles-js',
+  {
+    "particles": {
+      "number": {
+        "value": 200,
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#b0bec5"
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000"
+        }
+      },
+      "opacity": {
+        "value": 0.8,
+        "random": true
+      },
+      "size": {
+        "value": 4,
+        "random": true
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 150,
+        "color": "#b0bec5",
+        "opacity": 0.4,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 2,
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "attract": {
+          "enable": false
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 200,
+          "line_linked": {
+            "opacity": 0.5
+          }
+        },
+        "bubble": {
+          "distance": 400,
+          "size": 10,
+          "duration": 2,
+          "opacity": 0.8,
+          "speed": 3
+        }
+      }
+    },
+    "retina_detect": true
+  }
+);
+
+  </script>
+
+</body>
+</html>

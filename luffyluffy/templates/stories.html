@@ -1,0 +1,230 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Failure Vault</title>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="back-btn">
+    <a href="{% url 'main' %}">
+      <button type="button">⬅ Back to Home</button>
+    </a>
+  </div>
+  <div class="container">
+    <h1 class="heading">Failure Vault</h1>
+    <p class="subheading">Learn from the failures of others to build your success.</p>
+    <div class="grid" id="failureGrid">
+      {% for item in failure_stories %}
+      <div class="card">
+        <h2>{{ item.startup_name }}</h2>
+        <p><strong>Industry:</strong> {{ item.industry }}</p>
+        <p><strong>Funding Stage:</strong> {{ item.funding_stage }}</p>
+        <p><strong>Mistake:</strong> {{ item.mistake }}</p>
+      </div>
+      {% empty %}
+      <p>No failure stories available.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    particlesJS('particles-js',
+    {
+      "particles": {
+        "number": {
+          "value": 300,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#b0bec5"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000"
+          }
+        },
+        "opacity": {
+          "value": 0.8,
+          "random": true
+        },
+        "size": {
+          "value": 4,
+          "random": true
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#b0bec5",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "grab"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 200,
+            "line_linked": {
+              "opacity": 0.5
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 10,
+            "duration": 2,
+            "opacity": 0.8,
+            "speed": 3
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
+
+<style>
+  
+  /* Background Setup */
+  #particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    background: linear-gradient(135deg, #e3eff9, #f6f9fb);
+  }
+
+
+  .back-btn {
+    text-align: center;
+    margin-top: -5px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .back-btn a button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #90caf9, #42a5f5);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(66, 165, 245, 0.5);
+    position: relative;
+    z-index: 2;
+  }
+
+  .back-btn a button:hover {
+    transform: scale(1.05);
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 100px auto 40px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1;
+    position: relative;
+  }
+
+  /* Header */
+  h1 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1f2937;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .subheading {
+    text-align: center;
+    font-size: 18px;
+    color: #4b5563;
+    margin-bottom: 40px;
+  }
+
+  /* Card Layout */
+  .card {
+    background-color: #f8fafc;
+    border-left: 6px solid #2563eb;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  }
+
+  .card h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    font-size: 16px;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container {
+      margin: 60px 10px 20px 10px;
+    }
+
+    h1 {
+      font-size: 28px;
+    }
+
+    .card h2 {
+      font-size: 20px;
+    }
+
+    .card p {
+      font-size: 14px;
+    }
+  }
+</style>

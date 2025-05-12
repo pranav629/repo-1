@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrepreneur Login</title>
+  <style>
+    /* === Base Styles === */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6f9fb;
+      color: #555;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Particle Background */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* === Container (Form) === */
+    .container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 380px;
+      max-width: 90%;
+      z-index: 1;
+      text-align: center;
+      border: 2px solid #d8eaf8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* === Heading === */
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    /* === Error Message === */
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    input:-webkit-autofill {
+      box-shadow: 0 0 0px 1000px white inset !important; /* replace white with your input background color */
+      -webkit-text-fill-color: #000 !important;
+  }
+  
+    /* === Inputs === */
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #a1c4fd;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+      background-color: white; /* Added for autofill fix */
+    }
+
+    input:focus {
+      border-color: #3498db;
+      box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.4);
+    }
+
+    /* Prevent yellow color of autofill */
+    input:-webkit-autofill {
+      background-color: white !important;
+      color: #555 !important;
+      box-shadow: 0 0 0px 1000px white inset;
+    }
+
+    input:-webkit-autofill:focus {
+      background-color: white !important;
+    }
+
+    /* === Button === */
+    button {
+      width: 95%;
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: white;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* === Text and Links === */
+    p {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    p a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    p a:hover {
+      color: #2c3e50;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Login Form -->
+  <form class="container" method="POST">
+    {% csrf_token %}
+    <h2>Entrepreneur Login</h2>
+    <p class="error-message">{{message}}</p>
+    <input type="email" id="login-email" placeholder="Enter your email" name="email" required value="{{email}}">
+    <input type="password" id="login-password" placeholder="Enter your password" name="password" required>
+    <button type="submit">Login</button>
+    <p>Don't have an account? <a href="entrepreneur-signup/">Signup</a></p>
+  </form>
+
+  <!-- ParticlesJS Script -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 300,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#b0bec5"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000"
+          }
+        },
+        "opacity": {
+          "value": 0.7,
+          "random": true
+        },
+        "size": {
+          "value": 3,
+          "random": true
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#b0bec5",
+          "opacity": 0.5,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 200,
+            "line_linked": {
+              "opacity": 0.5
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 10,
+            "duration": 2,
+            "opacity": 0.8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 100,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+
+</body>
+</html>

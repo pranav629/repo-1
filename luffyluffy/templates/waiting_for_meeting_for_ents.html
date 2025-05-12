@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Not Started Yet</title>
+  {% load static %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* === Base Styles === */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6f9fb;
+      color: #555;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: #2c3e50;
+    }
+    /* === Card === */
+    .waiting-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      border: none;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .card-header {
+      background-color: #e3eff9;
+      padding: 25px 20px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: #2c3e50;
+      border-bottom: none;
+    }
+    .card-body {
+      padding: 30px;
+      text-align: center;
+    }
+    .text-message {
+      font-size: 16px;
+      color: #7f8c8d;
+      margin-bottom: 25px;
+    }
+    .clock-icon {
+      font-size: 60px;
+      color: #3498db;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .btn-back {
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      width: 100%;
+      max-width: 250px;
+      margin: 0 auto;
+      display: block;
+    }
+    .btn-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(53, 122, 184, 0.4);
+      color: white;
+    }
+    /* === Particles === */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    .container {
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+  
+  <div class="container">
+    <div class="waiting-card">
+      <div class="card-header">
+        Meeting Not Started Yet
+      </div>
+      <div class="card-body">
+        <div class="clock-icon">⏰</div>
+        <p class="text-message">The meeting has not started yet. Please wait until the scheduled time or check back closer to your appointment.</p>
+        <a href="{% url 'bookedcallsents' %}" class="btn-back">
+          Return to My Bookings
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    // Initialize particles
+    document.addEventListener('DOMContentLoaded', function() {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#b0bec5"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000"
+            }
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": true
+          },
+          "size": {
+            "value": 3,
+            "random": true
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#b0bec5",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "attract": {
+              "enable": false
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 200,
+              "line_linked": {
+                "opacity": 0.5
+              }
+            },
+            "push": {
+              "particles_nb": 4
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    });
+  </script>
+</body>
+</html>

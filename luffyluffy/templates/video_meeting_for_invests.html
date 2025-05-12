@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Meeting Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      margin: 20px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      color: #7f8c8d;
+      margin-bottom: 25px;
+    }
+    
+    .btn {
+      display: inline-block;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin: 10px;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-secondary {
+      background-color: #ecf0f1;
+      color: #2c3e50;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      margin-bottom: 20px;
+      width: 100px;
+      height: 100px;
+      background-color: #3498db;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 20px;
+    }
+    
+    .logo svg {
+      width: 60px;
+      height: 60px;
+      fill: white;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #95a5a6;
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 12px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: modalFadeIn 0.3s ease;
+    }
+    
+    @keyframes modalFadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    
+    .modal h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    
+    .rating {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    
+    .rating input {
+      display: none;
+    }
+    
+    .rating label {
+      font-size: 30px;
+      color: #ddd;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    .rating label:hover,
+    .rating label:hover ~ label,
+    .rating input:checked ~ label {
+      color: #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1 17l-5-5 1.41-1.41 3.59 3.59 7.59-7.59 1.41 1.41-9 9z"/>
+      </svg>
+    </div>
+    
+    <h1>Join Virtual Meeting</h1>
+    <p>Connect with others through our secure video conferencing platform</p>
+    
+    <input type="text" id="roomInput" placeholder="Enter room name (optional)" />
+    <input type="text" id="userNameInput" placeholder="Your name" />
+    <select id="userRoleInput">
+      <option value="investor">I am an investor</option>
+      <option value="entrepreneur">I am an entrepreneur</option>
+    </select>
+    
+    <button onclick="joinMeeting()" class="btn btn-primary">
+      Join Meeting Now
+    </button>
+    
+    <a href="{% url 'bookedcallsinvests' %}" class="btn btn-secondary">
+      Go Back to bookings
+    </a>
+    
+    <div class="footer">
+      <p>Need help? Contact startupconnect8@gmail.com</p>
+    </div>
+  </div>
+  
+  <!-- Feedback Modal -->
+  <div id="feedbackModal" class="modal">
+    <div class="modal-content">
+      <h2>Investor Feedback</h2>
+      <p>Please provide your suggestions to the entrepreneur:</p>
+      
+      <div class="rating">
+        <input type="radio" id="star5" name="rating" value="5" />
+        <label for="star5">★</label>
+        <input type="radio" id="star4" name="rating" value="4" />
+        <label for="star4">★</label>
+        <input type="radio" id="star3" name="rating" value="3" />
+        <label for="star3">★</label>
+        <input type="radio" id="star2" name="rating" value="2" />
+        <label for="star2">★</label>
+        <input type="radio" id="star1" name="rating" value="1" />
+        <label for="star1">★</label>
+      </div>
+      
+      <textarea id="feedbackText" rows="4" placeholder="Share your suggestions for improvement..."></textarea>
+      
+      <button id="submitFeedback" class="btn btn-primary">Submit Feedback</button>
+      <button id="skipFeedback" class="btn btn-secondary">Skip</button>
+    </div>
+  </div>
+  
+  <script>
+    // Get URL parameters
+    function getParameterByName(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+    
+    // Check if user is returning from a meeting
+    const isReturning = getParameterByName('returning');
+    const userRole = getParameterByName('role');
+    
+    // Show feedback modal if returning from meeting and is an investor
+    if (isReturning === 'true' && userRole === 'investor') {
+      document.getElementById('feedbackModal').style.display = 'flex';
+    }
+    
+    function joinMeeting() {
+      let roomName = document.getElementById('roomInput').value.trim();
+      const userName = document.getElementById('userNameInput').value.trim();
+      const userRole = document.getElementById('userRoleInput').value;
+      
+      if (!roomName) {
+        // Generate a random room name if none is provided
+        roomName = "{{ room_name }}";
+      }
+      
+      // Remove any spaces and special characters from the room name
+      
+      
+      // Create the meeting URL with parameters
+      const meetingURL = `https://meet.jit.si/${roomName}`;
+      
+      // Store user info in localStorage for later use
+      localStorage.setItem('userName', userName);
+      localStorage.setItem('userRole', userRole);
+      localStorage.setItem('roomName', roomName);
+      
+      // Open the meeting in a new window
+      const meetingWindow = window.open(meetingURL, '_blank');
+      
+      // Monitor when the meeting window closes
+      const checkWindow = setInterval(() => {
+        if (meetingWindow.closed) {
+          clearInterval(checkWindow);
+          handleMeetingClosed();
+        }
+      }, 1000);
+    }
+    
+    function handleMeetingClosed() {
+      const userRole = localStorage.getItem('userRole');
+      
+      // Only show feedback form to investors
+      if (userRole === 'investor') {
+        document.getElementById('feedbackModal').style.display = 'flex';
+      } else {
+        // For entrepreneurs, redirect to booking page or show a different message
+        if (confirm('Thank you for attending the meeting. Would you like to return to bookings?')) {
+          window.location.href = "{% url 'bookedcallsinvests' %}";
+        }
+      }
+    }
+    
+    // Submit feedback
+    document.getElementById('submitFeedback').addEventListener('click', function() {
+      const rating = document.querySelector('input[name="rating"]:checked')?.value || '0';
+      const feedback = document.getElementById('feedbackText').value;
+      const roomName = localStorage.getItem('roomName');
+      const investorName = localStorage.getItem('userName');
+      
+      // Send feedback to backend
+      // This is a placeholder - you would add actual AJAX code here
+      console.log(`Feedback for room ${roomName}: ${rating} stars, "${feedback}"`);
+      alert('Thank you for your feedback!');
+      
+      // Here you would add AJAX code to send to your backend
+      // Example:
+      /*
+      fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          roomName: roomName,
+          investorName: investorName,
+          rating: rating,
+          feedback: feedback
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        window.location.href = "{% url 'bookedcallsinvests' %}";
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('There was an error submitting your feedback. Please try again.');
+      });
+      */
+      
+      // Close the modal and redirect
+      document.getElementById('feedbackModal').style.display = 'none';
+      window.location.href = "{% url 'bookedcallsinvests' %}";
+    });
+    
+    // Skip feedback
+    document.getElementById('skipFeedback').addEventListener('click', function() {
+      document.getElementById('feedbackModal').style.display = 'none';
+      window.location.href = "{% url 'bookedcallsinvests' %}";
+    });
+  </script>
+</body>
+</html>

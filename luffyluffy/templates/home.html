@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StartupX - Login</title>
+
+  <style>
+    /* === Base Styles === */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6f9fb;
+      color: #555;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: #2c3e50;
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #2c3e50;
+      text-decoration: underline;
+    }
+
+    /* === Particle background === */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+
+    /* === Layout === */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    /* === Header === */
+    header {
+      background-color: #e3eff9;
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      z-index: 1;
+    }
+
+    /* === Cards === */
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      transition: transform 0.3s ease;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Specific Card for Login */
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* === Buttons === */
+    button {
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Smooth hover bounce animation */
+    .animate-button {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* === Footer === */
+    footer {
+      background-color: #e3eff9;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      z-index: 1;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      .card {
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="particles-js"></div>
+
+  <header>
+    <h1>Welcome to StartupX</h1>
+  </header>
+
+  <main class="container">
+    <div class="card login-card">
+      <h2>Select Your Role</h2>
+
+      <a href='entrepreneur-login/'><button class="animate-button" >
+        Login as Entrepreneur
+      </button>
+
+      <a href='mentor-login/'><button class="animate-button" >
+        Login as Mentor
+      </button>
+      <a href='investor-login/'><button class="animate-button" >
+        Login as Investor
+      </button>
+
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 StartupX. All rights reserved.
+  </footer>
+
+  <!-- Include particles.js library -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <!-- Initialize particles.js -->
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 300,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#b0bec5"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000"
+          }
+        },
+        "opacity": {
+          "value": 0.7,
+          "random": true
+        },
+        "size": {
+          "value": 3,
+          "random": true
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#b0bec5",
+          "opacity": 0.5,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"  <!-- CHANGE HERE: make them move away from cursor -->
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 200,
+            "line_linked": {
+              "opacity": 0.5
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 10,
+            "duration": 2,
+            "opacity": 0.8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 100,   <!-- Particles run away when close to mouse -->
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+  
+
+</body>
+</html>

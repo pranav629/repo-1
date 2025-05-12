@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrepreneur Signup</title>
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f6f9fb;
+            color: #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Main Container */
+        .container {
+            width: 400px;
+            padding: 30px;
+            background: white;
+            border: 2px solid #3498db; /* Updated to new palette blue */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s ease-in-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form Inputs */
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #d8eaf8; /* Light blue from new palette */
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3498db; /* Blue from new palette */
+            box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Buttons */
+        button {
+            width: 95%;
+            background: linear-gradient(135deg, #4a90e2, #357ab8);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Login Link */
+        p {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        p a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        p a:hover {
+            color: #2c3e50;
+            text-decoration: underline;
+        }
+
+        /* Heading Styles */
+        h2 {
+            color: #2c3e50;
+        }
+
+        /* Particle.js Canvas */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        input:-webkit-autofill {
+            box-shadow: 0 0 0px 1000px white inset !important; /* replace white with your input background color */
+            -webkit-text-fill-color: #000 !important;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Container for Entrepreneur Signup Form -->
+    <form class="container" method="POST" >
+        {% csrf_token %}
+        <h2>Entrepreneur Signup</h2>
+        <p style="color:red">{{ message }}</p>
+
+        <!-- Input Fields for Name, Email, Password -->
+        <input type="text" id="signup-name" placeholder="Enter your name" name="name" required>
+        <input type="email" id="signup-email" placeholder="Enter your email" name="email" required>
+        
+        <input 
+            type="password" 
+            placeholder="Enter your password"
+            id="signup-password" 
+            name="password" 
+            required
+           
+            title="Password must be at least 6 characters long and contain at least 1 letter and 1 number."
+        >
+
+        <!-- Signup Button -->
+        <button type="submit">Signup</button>
+
+        <!-- Login Link -->
+        <p>Already have an account? <a href="entrepreneur-login/">Login</a></p>
+    </form>
+    
+    <!-- Script for Firebase and Signup Logic -->
+    
+    <!-- Particle.js Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Particle.js Initialization for Background Effect -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 300,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#b0bec5"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000"
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.8,
+                        "random": true
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#b0bec5",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "attract": {
+                            "enable": false
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 200,
+                            "line_linked": {
+                                "opacity": 0.5
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 10,
+                            "duration": 2,
+                            "opacity": 0.8,
+                            "speed": 3
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+        });
+    </script>
+
+    <div id="particles-js"></div>
+</body>
+</html>

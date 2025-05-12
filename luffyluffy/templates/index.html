@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Startup Profile Registration</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --secondary: #2c3e50;
+      --light-bg: #f6f9fb;
+      --white: #ffffff;
+      --gray: #555555;
+      --light-gray: #dddddd;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: black;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: var(--light-bg);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    h1 {
+      color: var(--secondary);
+      margin-bottom: 10px;
+    }
+
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .form-group {
+      color: black;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .required:after {
+      content: " *";
+      color: #e74c3c;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--light-gray);
+      border-radius: 6px;
+      font-size: 16px;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #357ab8;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      color: var(--gray);
+      font-size: 14px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      .form-container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container">
+    <header>
+      <h1>Details</h1>
+      <p>Join our network of innovative startups</p>
+    </header>
+
+    <div class="form-container" >
+    
+      <form id="startupForm" method="POST" action='entrepreneur/'>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="fullName" class="required">Full Name</label>
+          <input type="text" id="fullName" name="fullName" value="{{name}}" readonly required />
+        </div>
+
+        <div class="form-group">
+          <label for="startupName" class="required">Startup Name</label>
+          <input type="text" id="startupName" name="startupName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="required">Email</label>
+          <input type="email" id="email" name="email" required value={{email}} readonly/>
+        </div>
+
+        <div class="form-group">
+          <label for="phone" class="required">Phone Number</label>
+          <input type="tel" id="phone" name="phone" required />
+        </div>
+        <input type="password" value="{{password}}" name='password' hidden>
+
+        <div class="form-group">
+          <label for="qualification">Qualification</label>
+          <input type="text" id="qualification" name="qualification" />
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="required">Startup Description</label>
+          <textarea id="description" name="description" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="state" class="required">State</label>
+          <select id="state" name="state" required>
+            <option value="">Select State</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="city" class="required">City</label>
+          <select id="city" name="city" required>
+            <option value="">Select City</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Chennai">Coimbatore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Lucknow">Lucknow</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Amritsar">Amritsar</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Availability</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="fullTime" name="availability" value="Full-time" />
+              <label for="fullTime">Full-time</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="partTime" name="availability" value="Part-time" />
+              <label for="partTime">Part-time</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="flexible" name="availability" value="Flexible" />
+              <label for="flexible">Flexible</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="required">Languages Spoken</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="english" name="languages" value="English" />
+              <label for="english">English</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="hindi" name="languages" value="Hindi" />
+              <label for="hindi">Hindi</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="spanish" name="languages" value="Spanish" />
+              <label for="spanish">Spanish</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="french" name="languages" value="French" />
+              <label for="french">French</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="otherLanguage" name="languages" value="Other" />
+              <label for="otherLanguage">Other</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="industry" class="required">Industry</label>
+          <select id="industry" name="industry" required>
+            <option value="">Select Industry</option>
+            <option value="Technology">Technology</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Finance">Finance</option>
+            <option value="Education">Education</option>
+            <option value="E-commerce">E-commerce</option>
+            <option value="Food & Beverage">Food & Beverage</option>
+            <option value="Manufacturing">Manufacturing</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Real Estate">Real Estate</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="teamSize" class="required">Team Size</label>
+          <select id="teamSize" name="teamSize" required>
+            <option value="">Select Team Size</option>
+            <option value="1">Solo Founder</option>
+            <option value="2-5">2-5 members</option>
+            <option value="6-10">6-10 members</option>
+            <option value="11-20">11-20 members</option>
+            <option value="21-50">21-50 members</option>
+            <option value="51+">51+ members</option>
+          </select>
+        </div>
+
+        <button type="submit">Submit Profile</button>
+      </form>
+    </div>
+
+    <footer>
+      <p>© 2025 Startup Network. All rights reserved.</p>
+      <p>Contact us at <a href="mailto:info@startupnetwork.com">info@startupXnetwork.com</a></p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#4a90e2" },
+          shape: { type: "circle", stroke: { width: 0, color: "#000" } },
+          opacity: { value: 0.5 },
+          size: { value: 3, random: true },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#4a90e2",
+            opacity: 0.4,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            out_mode: "out",
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "grab" },
+            onclick: { enable: true, mode: "push" },
+          },
+          modes: {
+            grab: { distance: 140, line_linked: { opacity: 1 } },
+            push: { particles_nb: 4 },
+          },
+        },
+        retina_detect: true,
+      });
+
+      const form = document.getElementById("startupForm");
+      
+    });
+  </script>
+</body>
+</html>

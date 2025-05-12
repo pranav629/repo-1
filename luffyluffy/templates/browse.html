@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Failures - Failure Vault</title>
+  
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6f9fb;
+      color: #333;
+    }
+
+    header {
+      background-color: #e3eff9;
+      padding: 30px;
+      text-align: center;
+      border-bottom: 1px solid #cbd5e1;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #2c3e50;
+    }
+
+    a.back-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: #4a90e2;
+      text-decoration: none;
+    }
+
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .filters {
+      background: #d8eaf8;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .filters h2 {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      color: #2c3e50;
+    }
+
+    .filter-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      width: 200px;
+    }
+
+    .filter-group label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .filter-group select {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      background-color: #ffffff;
+      font-size: 1rem;
+    }
+
+    .failure-card {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+
+    .failure-card h3 {
+      margin: 0 0 10px;
+      color: #34495e;
+    }
+
+    .failure-card p {
+      color: #555;
+    }
+
+    .failure-card a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .failure-card a:hover {
+      text-decoration: underline;
+    }
+
+    .failure-card button {
+      margin-top: 10px;
+      padding: 8px 14px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .failure-card button:hover {
+      background-color: #1e40af;
+    }
+
+    .failure-card button:disabled {
+      background-color: #9ca3af;
+      cursor: wait;
+    }
+
+    .analysis-output {
+      margin-top: 15px;
+      color: #1f2937;
+      white-space: pre-wrap;
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+      font-size: 14px;
+      line-height: 1.5;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .analysis-output h2, 
+    .analysis-output h3 {
+      margin-top: 12px;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    .analysis-output ul, 
+    .analysis-output ol {
+      padding-left: 20px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      margin-left: 0.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .filter-group {
+        width: 100%;
+      }
+    }
+
+    .report-analysis {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+      padding: 32px 28px;
+      margin: 0 auto;
+      max-width: 900px;
+      font-size: 1.08rem;
+      color: #222;
+    }
+    .report-header h2 {
+      margin: 0 0 8px 0;
+      font-size: 2rem;
+      color: #1e293b;
+      font-weight: 700;
+    }
+    .report-meta {
+      font-size: 1rem;
+      color: #64748b;
+      margin-bottom: 10px;
+    }
+    .report-section {
+      margin-bottom: 22px;
+    }
+    .report-section h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.18rem;
+      color: #2563eb;
+      font-weight: 600;
+      border-left: 4px solid #2563eb;
+      padding-left: 10px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .report-section ul {
+      margin: 8px 0 0 18px;
+      padding: 0 0 0 18px;
+    }
+    .report-section p {
+      margin: 0;
+      color: #374151;
+      line-height: 1.7;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Initialize Firebase
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyABLQpnVyNj71kjt8r2lQ2Nv_g_Wdz8tSc",
+  authDomain: "mentorbookingsystem.firebaseapp.com",
+  projectId: "mentorbookingsystem",
+  storageBucket: "mentorbookingsystem.firebasestorage.app",
+  messagingSenderId: "675287902952",
+  appId: "1:675287902952:web:06085f7a3ddbb9857bb75d",
+  measurementId: "G-LB6MNBWNX7"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+</head>
+
+<body>
+  <header>
+    <h1>Failure Vault - Browse Failures</h1>
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </header>
+
+  <main>
+    <section class="filters">
+      <h2>🎯 Find Relevant Failures</h2>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label for="industry">Industry</label>
+          <select id="industry">
+            <option value="All">All</option>
+            <option>HealthTech</option>
+            <option>CleanTech / EV Batteries</option>
+            <option>Electric Vehicles</option>
+            <option>E-commerce / Alcohol Delivery</option>
+            <option>Consumer Hardware</option>
+            <option>Energy Storage</option>
+            <option>Food Delivery</option>
+            <option>Software Development</option>
+            <option>Autonomous Vehicles</option>
+            <option>Streaming Media</option>
+            <option>Cloud Storage</option>
+            <option>Event Management</option>
+            <option>Consumer Drones</option>
+            <option>Hospitality</option>
+            <option>Transportation</option>
+            <option>Logistics</option>
+            <option>FinTech</option>
+            <option>E-commerce</option>
+            <option>Cryptocurrency</option>
+            <option>Social Media</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="stage">Funding Stage</label>
+          <select id="stage">
+            <option value="All">All</option>
+            <option>Seed</option>
+            <option>Series A</option>
+            <option>Series B</option>
+            <option>Series C</option>
+            <option>Series C+</option>
+            <option>Series D</option>
+            <option>Series D+</option>
+            <option>IPO</option>
+            <option>Crowdfunded</option>
+            <option>Growth</option>
+            <option>Acquired</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <div id="failures-list">
+      <!-- Loading message -->
+      <p id="loading-message">Loading failures data...</p>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Failure Vault. All rights reserved.
+  </footer>
+
+  <script>
+    // DOM elements
+    const failuresList = document.getElementById('failures-list');
+    const loadingMessage = document.getElementById('loading-message');
+    const industryFilter = document.getElementById('industry');
+    const stageFilter = document.getElementById('stage');
+    let allFailures = [];
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Load failures from Firestore
+    function loadFailures() {
+      db.collection('failures').get()
+        .then((querySnapshot) => {
+          loadingMessage.style.display = 'none';
+          
+          if (querySnapshot.empty) {
+            failuresList.innerHTML = '<p>No failures found in the database.</p>';
+            return;
+          }
+          
+          allFailures = querySnapshot.docs.map(doc => {
+            return { id: doc.id, ...doc.data() };
+          });
+          
+          renderFailures(allFailures);
+        })
+        .catch(error => {
+          loadingMessage.style.display = 'none';
+          failuresList.innerHTML = <p>Error loading failures: ${error.message}</p>;
+          console.error("Error getting failures:", error);
+        });
+    }
+
+    // Render failures to the page
+    function renderFailures(failures) {
+      failuresList.innerHTML = '';
+
+      if (failures.length === 0) {
+        failuresList.innerHTML = '<p>No failures found matching your criteria.</p>';
+        return;
+      }
+
+      failures.forEach(failure => {
+        // Safely handle potentially undefined properties
+        const startup = escapeHtml(failure.startup || 'Unknown Startup');
+        const industry = escapeHtml(failure.industry || 'Unknown Industry');
+        const stage = escapeHtml(failure.stage || 'Unknown Stage');
+        const mistake = escapeHtml(failure.mistake || 'No mistake details available');
+        
+        const card = document.createElement('div');
+        card.className = 'failure-card';
+        card.innerHTML = `
+          <h3>${startup} - ${industry} (${stage})</h3>
+          <p><strong>Mistake:</strong> ${mistake}</p>
+          ${failure.reference ? <p><a href="${escapeHtml(failure.reference)}" target="_blank" rel="noopener noreferrer">Read more</a></p> : ''}
+          <button onclick="generateAnalysis('${failure.id}', this)">Generate Analysis</button>
+          <div class="analysis-output" style="display: none;"></div>
+        `;
+        failuresList.appendChild(card);
+      });
+    }
+
+    // Enhanced analysis generator
+    async function generateAnalysis(failureId, btn) {
+      const outputDiv = btn.nextElementSibling;
+      outputDiv.style.display = 'block';
+      outputDiv.innerText = "Generating analysis...";
+
+      // UI feedback
+      const loadingSpinner = document.createElement('span');
+      loadingSpinner.className = 'loading';
+      btn.disabled = true;
+      btn.innerText = "Generating";
+      btn.appendChild(loadingSpinner);
+
+      // Find the failure data by ID
+      const failure = allFailures.find(f => f.id === failureId);
+      if (!failure) {
+        outputDiv.innerText = "Error: Could not find failure data.";
+        resetButton(btn);
+        return;
+      }
+
+      const startup = failure.startup || 'Unknown';
+      const industry = failure.industry || 'Unknown';
+      const stage = failure.stage || 'Unknown';
+      const mistake = failure.mistake || 'Unknown';
+      const reference = failure.reference || null;
+
+      try {
+        let additionalContext = "";
+
+        if (reference && isValidUrl(reference)) {
+          outputDiv.innerText = "Fetching additional context from reference link...";
+
+          try {
+            const response = await fetch(/api/fetch-article/?url=${encodeURIComponent(reference)});
+            const data = await response.json();
+
+            if (data.text) {
+              additionalContext = data.text.slice(0, 1000) + '...'; // Limit to 1000 characters
+            } else {
+              additionalContext = "No article content could be retrieved.";
+            }
+          } catch (fetchError) {
+            console.error("Error fetching reference article:", fetchError);
+            additionalContext = "Failed to fetch article content.";
+          }
+        }
+
+        // Simulate processing delay (optional)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Use innerHTML for HTML output
+        const analysis = generateComprehensiveAnalysis(startup, industry, stage, mistake, additionalContext);
+        outputDiv.innerHTML = analysis;
+      } catch (error) {
+        outputDiv.innerText = Error generating analysis: ${error.message};
+        console.error("Analysis generation error:", error);
+      } finally {
+        resetButton(btn);
+      }
+    }
+
+    // Generate a comprehensive, industry-specific analysis
+    function generateComprehensiveAnalysis(startup, industry, stage, mistake, additionalContext) {
+      // Industry-specific insights
+      const industryInsights = getIndustrySpecificInsights(industry);
+      const stageInsights = getStageSpecificInsights(stage);
+      const rootCauses = analyzeRootCauses(mistake, industry);
+      const lessons = generateTargetedLessons(industry, stage, mistake);
+      const similarCases = findSimilarCases(industry, mistake);
+      const questions = generateReflectionQuestions(industry, stage, mistake);
+      // HTML template for a clean report
+      return `
+      <div class="report-analysis">
+        <div class="report-header">
+          <h2>${startup} Failure Analysis Report</h2>
+          <div class="report-meta">
+            <span><b>Industry:</b> ${industry}</span> |
+            <span><b>Stage:</b> ${stage}</span>
+          </div>
+        </div>
+        <hr/>
+        <section class="report-section">
+          <h3>1. Executive Summary</h3>
+          <p>${startup}, operating in the <b>${industry}</b> industry at the <b>${stage}</b> stage, faced significant challenges that ultimately led to their failure. <br><b>Key Issue:</b> ${mistake}.<br>${additionalContext ? <span style='color:#555'><b>Reference Insights:</b> ${additionalContext}</span> : ''}</p>
+        </section>
+        <section class="report-section">
+          <h3>2. Root Cause Analysis</h3>
+          <p>${rootCauses.replace(/\n/g, '<br>')}</p>
+        </section>
+        <section class="report-section">
+          <h3>3. Industry Context & Market Dynamics</h3>
+          <p>${industryInsights}</p>
+        </section>
+        <section class="report-section">
+          <h3>4. Stage-Specific Challenges</h3>
+          <p>${stageInsights}</p>
+        </section>
+        <section class="report-section">
+          <h3>5. Key Lessons Learned</h3>
+          <ul>${lessons.map(lesson => <li>${lesson}</li>).join('')}</ul>
+        </section>
+        <section class="report-section">
+          <h3>6. Similar Cases & Pattern Recognition</h3>
+          <p>${similarCases.replace(/\n/g, '<br>')}</p>
+        </section>
+        <section class="report-section">
+          <h3>7. Preventative Measures & Recommendations</h3>
+          <ul>
+            <li><b>Strategic Planning:</b> Implement risk assessment frameworks, milestone-based growth, scenario planning.</li>
+            <li><b>Operational Excellence:</b> Clear KPIs, scalable processes, strong financial controls.</li>
+            <li><b>Market & Customer Focus:</b> Validate product-market fit, feedback loops, monitor trends.</li>
+            <li><b>Team & Leadership:</b> Balanced teams, talent development, learning culture.</li>
+          </ul>
+        </section>
+        <section class="report-section">
+          <h3>8. Recovery & Pivot Opportunities</h3>
+          <ul>
+            <li>Identify adjacent market opportunities</li>
+            <li>Pivot to a more sustainable business model</li>
+            <li>Leverage existing assets and capabilities in new ways</li>
+          </ul>
+        </section>
+        <section class="report-section">
+          <h3>9. Long-term Impact & Industry Implications</h3>
+          <ul>
+            <li>Need for robust risk management frameworks</li>
+            <li>Importance of sustainable growth strategies</li>
+            <li>Value of operational discipline while pursuing innovation</li>
+          </ul>
+        </section>
+        <section class="report-section">
+          <h3>10. Questions to Consider</h3>
+          <ul>${questions.map(q => <li>${q}</li>).join('')}</ul>
+        </section>
+      </div>
+      `;
+    }
+
+    // Expanded industry-specific insights
+    function getIndustrySpecificInsights(industry) {
+      const insights = {
+        "HealthTech": "The healthcare industry has complex regulatory requirements, long sales cycles, and the need for clinical validation. Stakeholder alignment between patients, providers, insurers, and regulators is crucial for success. Data privacy and interoperability are also major hurdles.",
+        "CleanTech / EV Batteries": "This sector faces challenges with scale manufacturing, supply chain constraints, and the need to balance cost with performance. The technology readiness level often lags behind market expectations. Policy changes and commodity price volatility can have outsized impacts.",
+        "Electric Vehicles": "EV companies face intensive capital requirements, complex manufacturing challenges, and pressure to scale rapidly in a market dominated by established players with deep pockets. Infrastructure and regulatory support are critical for adoption.",
+        "E-commerce / Alcohol Delivery": "Regulatory compliance across different jurisdictions presents significant challenges, alongside last-mile logistics complexity and tight margins. Customer acquisition costs can quickly outpace lifetime value if not managed carefully.",
+        "Consumer Hardware": "Hardware startups face manufacturing challenges, inventory management risks, and high upfront costs before revenue generation. Product recalls or supply chain disruptions can be fatal.",
+        "Energy Storage": "This sector requires significant upfront R&D investment with long commercialization timelines and must navigate complex utility and regulatory landscapes. Safety and reliability are paramount.",
+        "Food Delivery": "Unit economics and operational efficiency at scale determine success in this high-competition, low-margin business model. Customer loyalty is hard to maintain and switching costs are low.",
+        "Software Development": "Technical debt, feature creep, and balancing innovation with stability are common challenges. Engineering culture and talent retention play outsized roles. Open-source competition can disrupt business models.",
+        "Autonomous Vehicles": "The technology requires extremely high reliability standards and faces significant regulatory uncertainty, alongside complex ethical considerations. Public trust and safety incidents can make or break adoption.",
+        "Streaming Media": "Content acquisition costs and competition for viewer attention make unit economics challenging without massive scale. Platform exclusivity and licensing can be double-edged swords.",
+        "FinTech": "Regulatory compliance requirements and security concerns create high barriers to entry and operational overhead. Trust and transparency are essential for user adoption.",
+        "Cryptocurrency": "Regulatory uncertainty, security vulnerabilities, and market volatility create significant operational and strategic challenges. User education and fraud prevention are ongoing battles.",
+        "Social Media": "Network effects create winner-take-all dynamics, while content moderation and user retention present ongoing operational challenges. Monetization without alienating users is a delicate balance.",
+        "EdTech": "EdTech faces slow adoption cycles, regulatory scrutiny, and the challenge of demonstrating measurable learning outcomes. Partnerships with institutions are often key.",
+        "Logistics": "Logistics startups must optimize for efficiency, reliability, and cost. Technology integration with legacy systems and managing distributed operations are major hurdles.",
+        "TravelTech": "TravelTech is highly sensitive to macroeconomic shocks and regulatory changes. Seasonality and global events can rapidly shift demand patterns."
+      };
+      return insights[industry] || "This industry typically faces challenges balancing innovation with operational excellence, managing cash burn rates effectively, and timing market entry correctly.";
+    }
+
+    // Expanded stage-specific insights
+    function getStageSpecificInsights(stage) {
+      const insights = {
+        "Seed": "At the seed stage, startups typically face challenges with initial product-market fit validation, assembling the right founding team, and building an MVP. Running out of runway before achieving key milestones is a common failure point.",
+        "Pre-Seed": "Pre-seed companies are often still validating the core problem and solution. Access to capital is limited and founders must wear many hats.",
+        "Series A": "Series A companies often struggle with the transition from product development to commercialization. The pressure to show traction metrics can lead to premature scaling. Building a repeatable sales process is critical.",
+        "Series B": "The 'valley of death' for many startups occurs at Series B when companies must demonstrate scalable unit economics and operational efficiency while managing growing teams. Middle management and process discipline become important.",
+        "Series C": "At Series C, expectations for market leadership and clear paths to profitability intensify. Organizational scaling challenges often emerge at this stage, and international expansion may be considered.",
+        "Series C+": "Late-stage private companies face pressure to demonstrate public-market readiness while managing the expectations of a diverse investor base with potentially conflicting priorities.",
+        "Growth": "Growth-stage companies must balance continued expansion with operational excellence and may struggle with maintaining culture through rapid hiring. M&A activity may become relevant.",
+        "IPO": "The transition to public markets creates new disclosure requirements, quarterly performance pressures, and scrutiny that many founder teams are unprepared for.",
+        "Acquired": "Post-acquisition integration challenges, culture clashes, and strategic reprioritization can derail previously successful companies."
+      };
+      return insights[stage] || "At this funding stage, companies typically face tensions between growth expectations and operational reality, alongside challenges in organizational scaling and governance.";
+    }
+
+    // Root cause analysis
+    function analyzeRootCauses(mistake, industry) {
+      let causes = "Based on the described mistake, the root causes likely include:";
+      if (mistake.toLowerCase().includes("cash") || mistake.toLowerCase().includes("burn") || mistake.toLowerCase().includes("runway")) {
+        causes += "\n• Financial planning inadequacies - Lack of realistic cash flow projections and contingency planning";
+        causes += "\n• Misalignment between spending rate and revenue generation timeline";
+      }
+      if (mistake.toLowerCase().includes("market") || mistake.toLowerCase().includes("customer") || mistake.toLowerCase().includes("product-market")) {
+        causes += "\n• Insufficient market validation before scaling investment";
+        causes += "\n• Overestimation of addressable market size or adoption rate";
+        causes += "\n• Failure to iterate based on early customer feedback";
+      }
+      if (mistake.toLowerCase().includes("team") || mistake.toLowerCase().includes("founder") || mistake.toLowerCase().includes("leadership")) {
+        causes += "\n• Leadership capability gaps in critical growth areas";
+        causes += "\n• Team composition imbalances relative to business needs";
+        causes += "\n• Governance and decision-making process deficiencies";
+      }
+      if (mistake.toLowerCase().includes("execution") || mistake.toLowerCase().includes("operation")) {
+        causes += "\n• Operational system limitations that couldn't support scale";
+        causes += "\n• Inadequate process documentation and standardization";
+        causes += "\n• Resource allocation inefficiencies across business functions";
+      }
+      if (mistake.toLowerCase().includes("tech") || mistake.toLowerCase().includes("product") || mistake.toLowerCase().includes("development")) {
+        causes += "\n• Technical debt accumulation due to growth-focused prioritization";
+        causes += "\n• Architecture limitations that impeded scaling";
+        causes += "\n• Product development processes that couldn't maintain quality at velocity";
+      }
+      if (causes === "Based on the described mistake, the root causes likely include:") {
+        causes += "\n• Strategic misalignment between market opportunities and company capabilities";
+        causes += "\n• Execution gaps in translating vision to operational reality";
+        causes += "\n• Resource allocation imbalances across critical business functions";
+      }
+      return causes;
+    }
+
+    // Generate targeted lessons
+    function generateTargetedLessons(industry, stage, mistake) {
+      const baseLessons = [
+        "Maintain sufficient runway for at least 18-24 months, with clear milestone-based fundraising strategy",
+        "Validate product-market fit with quantifiable metrics before scaling operations or marketing",
+        "Develop balanced leadership teams with complementary skills across technical, operational, and commercial domains",
+        "Implement structured customer feedback loops that directly influence product roadmap prioritization",
+        "Create explicit decision-making frameworks that balance growth objectives with operational stability"
+      ];
+      const industryLessons = {
+        "HealthTech": [
+          "Map the full stakeholder ecosystem and ensure your solution creates aligned incentives across all parties",
+          "Budget for longer sales cycles and regulatory processes than initially anticipated",
+          "Build clinical evidence and ROI validation in parallel with product development"
+        ],
+        "Electric Vehicles": [
+          "Create modular manufacturing capabilities that allow scaled testing before full production commitments",
+          "Secure supply chain redundancies for critical components before scaling announcements",
+          "Develop realistic production ramp models based on comparable industry cases, not aspirational targets"
+        ],
+        "Software Development": [
+          "Implement technical debt management processes from early stages with dedicated sprint allocation",
+          "Balance feature development with platform stability through clear architecture governance",
+          "Create engineering culture that values maintainability and documentation alongside innovation"
+        ],
+        "FinTech": [
+          "Build compliance considerations into product architecture from inception, not as an afterthought",
+          "Establish security practices that exceed industry standards to build trust and prevent catastrophic breaches",
+          "Create unit economics models that account for full customer acquisition costs including trust-building"
+        ]
+      };
+      const stageLessons = {
+        "Seed": [
+          "Focus on proving fundamental assumptions before team expansion",
+          "Maintain founder-level customer relationships to ensure direct market feedback",
+          "Develop milestone-based spending tranches tied to specific validation points"
+        ],
+        "Series A": [
+          "Build operational systems that can scale before accelerating customer acquisition",
+          "Hire for organizational capability gaps rather than just product development",
+          "Implement financial planning systems that provide early warning indicators"
+        ],
+        "Series B": [
+          "Focus on unit economics optimization before geographic or product expansion",
+          "Develop middle management capabilities and clear decision rights frameworks",
+          "Create systematic knowledge sharing processes as teams grow and specialize"
+        ],
+        "Growth": [
+          "Balance operational excellence with continued innovation through structured processes",
+          "Implement cross-functional governance to prevent organizational silos",
+          "Develop metrics that identify diminishing returns on growth investments"
+        ]
+      };
+      let targetedLessons = [...baseLessons];
+      if (industryLessons[industry]) {
+        targetedLessons = targetedLessons.concat(industryLessons[industry]);
+      }
+      if (stageLessons[stage]) {
+        targetedLessons = targetedLessons.concat(stageLessons[stage]);
+      }
+      if (mistake.toLowerCase().includes("cash") || mistake.toLowerCase().includes("runway")) {
+        targetedLessons.push("Implement rolling 18-month cash flow projections with multiple scenarios");
+        targetedLessons.push("Create explicit downside planning triggers with pre-defined action plans");
+      }
+      if (mistake.toLowerCase().includes("market") || mistake.toLowerCase().includes("customer")) {
+        targetedLessons.push("Establish quantifiable product-market fit metrics with regular reassessment");
+        targetedLessons.push("Develop systematic processes for capturing and acting on customer feedback");
+      }
+      const shuffled = targetedLessons.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, 5);
+    }
+
+    // Improved pattern recognition with more real-world cases and links
+    function findSimilarCases(industry, mistake) {
+      const cases = {
+        "HealthTech": {
+          "regulatory": "Theranos (failed to obtain proper regulatory approval before scaling claims) - <a href='https://en.wikipedia.org/wiki/Theranos' target='_blank'>Read more</a>",
+          "adoption": "Practice Fusion (struggled with physician adoption despite initial investor enthusiasm) - <a href='https://en.wikipedia.org/wiki/Practice_Fusion' target='_blank'>Read more</a>",
+          "business model": "Zeo (innovative sleep tracking, failed to find sustainable business model) - <a href='https://en.wikipedia.org/wiki/Zeo,_Inc.' target='_blank'>Read more</a>"
+        },
+        "Electric Vehicles": {
+          "manufacturing": "Fisker Automotive (manufacturing challenges, supply chain issues) - <a href='https://en.wikipedia.org/wiki/Fisker_Automotive' target='_blank'>Read more</a>",
+          "funding": "Faraday Future (funding challenges, production delays) - <a href='https://en.wikipedia.org/wiki/Faraday_Future' target='_blank'>Read more</a>",
+          "competition": "Better Place (failed to compete with established automakers) - <a href='https://en.wikipedia.org/wiki/Better_Place' target='_blank'>Read more</a>"
+        },
+        "E-commerce": {
+          "logistics": "Webvan (expanded too rapidly, last-mile logistics) - <a href='https://en.wikipedia.org/wiki/Webvan' target='_blank'>Read more</a>",
+          "unit economics": "Fab.com (prioritized growth over sustainable unit economics) - <a href='https://en.wikipedia.org/wiki/Fab_(company)' target='_blank'>Read more</a>",
+          "inventory": "Gilt Groupe (inventory management, changing consumer preferences) - <a href='https://en.wikipedia.org/wiki/Gilt_Group' target='_blank'>Read more</a>"
+        },
+        "Software Development": {
+          "technical debt": "Friendster (collapsed under technical debt) - <a href='https://en.wikipedia.org/wiki/Friendster' target='_blank'>Read more</a>",
+          "product-market fit": "Color Labs (launched with funding before validating product-market fit) - <a href='https://en.wikipedia.org/wiki/Color_Labs' target='_blank'>Read more</a>",
+          "pivot": "Jawbone (failed to successfully pivot) - <a href='https://en.wikipedia.org/wiki/Jawbone_(company)' target='_blank'>Read more</a>"
+        },
+        "EdTech": {
+          "adoption": "AltSchool (struggled with adoption and scaling) - <a href='https://en.wikipedia.org/wiki/AltSchool' target='_blank'>Read more</a>"
+        },
+        "TravelTech": {
+          "market shock": "Thomas Cook Group (failed after macroeconomic shocks) - <a href='https://en.wikipedia.org/wiki/Thomas_Cook_Group' target='_blank'>Read more</a>"
+        }
+      };
+      let similarCasesText = "Pattern recognition across similar failures reveals:";
+      if (cases[industry]) {
+        for (const [key, value] of Object.entries(cases[industry])) {
+          if (mistake.toLowerCase().includes(key)) {
+            similarCasesText += \n• ${value};
+          }
+        }
+        if (similarCasesText === "Pattern recognition across similar failures reveals:") {
+          const industryCases = Object.values(cases[industry]);
+          similarCasesText += \n• ${industryCases[0]};
+          if (industryCases.length > 1) {
+            similarCasesText += \n• ${industryCases[1]};
+          }
+        }
+      } else {
+        similarCasesText += "\n• Premature scaling before product-market fit (e.g., Quibi, Pets.com)";
+        similarCasesText += "\n• Failure to adapt to market changes (e.g., Blockbuster, Kodak)";
+        similarCasesText += "\n• Misalignment between burn rate and value creation (e.g., WeWork, Quirky)";
+      }
+      return similarCasesText;
+    }
+
+    // Add a Questions to Consider section
+    function generateReflectionQuestions(industry, stage, mistake) {
+      const baseQuestions = [
+        "Did you validate your product with real customers before scaling?",
+        "Are you tracking your cash runway monthly?",
+        "Do you have advisors with experience in your industry?",
+        "Are you monitoring key metrics for early warning signs?"
+      ];
+      const industryQuestions = {
+        "HealthTech": [
+          "Have you mapped all regulatory requirements for your product?",
+          "Are you building clinical evidence alongside product development?"
+        ],
+        "Electric Vehicles": [
+          "Do you have supply chain redundancies for critical components?",
+          "Are your production ramp models based on real-world data?"
+        ],
+        "Software Development": [
+          "Are you allocating time for technical debt reduction each sprint?",
+          "Is your engineering culture focused on maintainability as well as innovation?"
+        ],
+        "EdTech": [
+          "Are you partnering with educational institutions for pilot programs?",
+          "Can you demonstrate measurable learning outcomes?"
+        ]
+      };
+      const stageQuestions = {
+        "Seed": [
+          "Are you focusing on proving fundamental assumptions before expanding the team?",
+          "Are you maintaining direct customer relationships as a founder?"
+        ],
+        "Series A": [
+          "Have you built operational systems that can scale?",
+          "Are you hiring for capability gaps, not just product development?"
+        ],
+        "Growth": [
+          "Are you balancing operational excellence with continued innovation?",
+          "Do you have metrics to identify diminishing returns on growth investments?"
+        ]
+      };
+      let questions = [...baseQuestions];
+      if (industryQuestions[industry]) {
+        questions = questions.concat(industryQuestions[industry]);
+      }
+      if (stageQuestions[stage]) {
+        questions = questions.concat(stageQuestions[stage]);
+      }
+      if (mistake.toLowerCase().includes("cash") || mistake.toLowerCase().includes("runway")) {
+        questions.push("Do you have a downside scenario plan for cash flow?");
+      }
+      if (mistake.toLowerCase().includes("market") || mistake.toLowerCase().includes("customer")) {
+        questions.push("Are you regularly reassessing product-market fit with quantifiable metrics?");
+      }
+      return questions.slice(0, 6);
+    }
+
+    // Validate URL format
+    function isValidUrl(string) {
+      try {
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    // Reset button state
+    function resetButton(btn) {
+      btn.disabled = false;
+      btn.innerText = "Generate Analysis";
+    }
+
+    // Apply filters to the failure list
+    function applyFilters() {
+      const selectedIndustry = industryFilter.value;
+      const selectedStage = stageFilter.value;
+
+      const filtered = allFailures.filter(failure => {
+        
+        const industry = failure.industry || '';
+        const stage = failure.stage || '';
+        
+        const industryMatch = selectedIndustry === 'All' || industry === selectedIndustry;
+        const stageMatch = selectedStage === 'All' || stage === selectedStage;
+        return industryMatch && stageMatch;
+      });
+
+      renderFailures(filtered);
+    }
+
+    // Event listeners
+    industryFilter.addEventListener('change', applyFilters);
+    stageFilter.addEventListener('change', applyFilters);
+
+    // Initial data load
+    document.addEventListener('DOMContentLoaded', loadFailures);
+  </script>
+</body>
+</html>

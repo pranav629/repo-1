@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Meeting Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      color: #7f8c8d;
+      margin-bottom: 25px;
+    }
+    
+    .btn {
+      display: inline-block;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-secondary {
+      background-color: #ecf0f1;
+      color: #2c3e50;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-review {
+      background-color: #2ecc71;
+      color: white;
+      display: none; /* Hidden by default */
+    }
+    .btn-review1{
+      background-color:hsl(353, 63.20%, 49.00%);
+      color: white;
+      display: none; /* Hidden by default */
+    }
+    .btn-review1:hover {
+      background-color: hsl(353, 63.20%, 49.00%);
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    
+    .btn-review:hover {
+      background-color: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      margin-bottom: 20px;
+      width: 100px;
+      height: 100px;
+      background-color: #3498db;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .logo svg {
+      width: 60px;
+      height: 60px;
+      fill: white;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #95a5a6;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    .meeting-status {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #3498db;
+    }
+    
+    .review-prompt {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e8f5e9;
+      border-radius: 8px;
+      border-left: 4px solid #2ecc71;
+    }
+    
+    .end-meeting-btn {
+      background-color: #e74c3c;
+      color: white;
+      display: none; /* Hidden by default */
+    }
+    
+    .end-meeting-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainContainer">
+    <div class="logo" id="meetingLogo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1 17l-5-5 1.41-1.41 3.59 3.59 7.59-7.59 1.41 1.41-9 9z"/>
+      </svg>
+    </div>
+    
+    <h1 id="mainHeading">Join Virtual Meeting</h1>
+    <p id="mainDescription">Connect with others through our secure video conferencing platform</p>
+    
+    <input type="text" id="roomInput" placeholder="Enter room name (optional)" />
+    
+    <button onclick="joinMeeting()" class="btn btn-primary" id="joinBtn">
+      Join Meeting Now
+    </button>
+    
+    <button class="btn end-meeting-btn" id="endMeetingBtn" onclick="endMeeting()">
+      End Meeting
+    </button>
+    
+    <button class="btn btn-review" id="reviewBtn" onclick="window.location.href = `/mentor-review/{{room_name}}`;">
+      Give Review
+    </button>
+    <button class="btn btn-review1" id="reviewBtn1" onclick="window.location.href = `/no-mentor-review/{{room_name}}`;">
+     skip
+    </button>
+    
+    <div class="meeting-status" id="meetingStatus">
+      Meeting is in progress...
+    </div>
+    
+    <div class="review-prompt" id="reviewPrompt">
+      Thank you for attending the meeting! We'd appreciate your feedback.
+    </div>
+    
+    <a href="{% url 'bookedcallsments' %}" class="btn btn-secondary">
+      Back to bookings
+    </a>
+    
+    <div class="footer">
+      <p>Need help? Contact startupconnect8@gmail.com</p>
+    </div>
+  </div>
+  
+  <script>
+    let meetingWindow = null;
+    let meetingEnded = false;
+    
+    function joinMeeting() {
+      let roomName = document.getElementById('roomInput').value.trim();
+      if (!roomName) {
+        roomName = "{{ room_name }}";
+      }
+      
+      // Clean the room name
+     
+      // Update UI to show meeting has started
+      document.getElementById('joinBtn').style.display = 'none';
+      document.getElementById('endMeetingBtn').style.display = 'inline-block';
+      document.getElementById('meetingStatus').style.display = 'block';
+      document.getElementById('mainHeading').textContent = 'Meeting In Progress';
+      document.getElementById('mainDescription').textContent = 'You are now connected to the meeting room.';
+      document.getElementById('meetingLogo').style.backgroundColor = '#2ecc71';
+      
+      // In a real app, this would open the actual meeting
+      const meetingURL = `https://meet.jit.si/${roomName}`;
+      meetingWindow = window.open(meetingURL, '_blank');
+      
+      // Simulate meeting activity (for demo purposes)
+      simulateMeetingActivity();
+    }
+    
+    function endMeeting() {
+      // Update UI to show meeting has ended
+      document.getElementById('endMeetingBtn').style.display = 'none';
+      document.getElementById('meetingStatus').style.display = 'none';
+      document.getElementById('reviewBtn').style.display = 'inline-block';
+      document.getElementById('reviewBtn1').style.display = 'inline-block';
+      document.getElementById('reviewPrompt').style.display = 'block';
+      document.getElementById('mainHeading').textContent = 'Meeting Completed';
+      document.getElementById('mainDescription').textContent = 'Thank you for attending the meeting.';
+      document.getElementById('meetingLogo').style.backgroundColor = '#9b59b6';
+      
+      // Close the meeting window if it's still open
+      if (meetingWindow && !meetingWindow.closed) {
+        meetingWindow.close();
+      }
+      
+      meetingEnded = true;
+    }
+    
+    function giveReview() {
+      // In a real app, this would redirect to a review page
+     
+      
+    }
+    
+    // Simulate meeting activity (for demo purposes)
+    function simulateMeetingActivity() {
+      let counter = 0;
+      const statusMessages = [
+        "Meeting is in progress...",
+        "Participants are discussing...",
+        "Sharing screens...",
+        "Presenting slides..."
+      ];
+      
+      const interval = setInterval(() => {
+        if (meetingEnded) {
+          clearInterval(interval);
+          return;
+        }
+        
+        document.getElementById('meetingStatus').textContent = 
+          statusMessages[counter % statusMessages.length];
+        counter++;
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

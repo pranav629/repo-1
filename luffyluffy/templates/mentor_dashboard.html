@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StartupX</title>
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #111;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+        .sidebar h2 {
+            text-align: center;
+            color: lavender;
+            margin-bottom: 30px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .sidebar ul li {
+            padding: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .sidebar ul li:hover {
+            background: lavender;
+            color: black;
+        }
+        
+        /* Profile Image */
+        .profile-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: lavender;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #111;
+            cursor: pointer;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 5px;
+            background: #333;
+            text-align: center;
+        }
+        .logout-btn:hover {
+            background: #d9534f;
+            color: white;
+        }
+        .container {
+          max-width: 1200px;
+          margin: 40px auto;
+          padding: 20px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 25px;
+          position: relative;
+          z-index: 2;
+        }
+        /* === Header === */
+        header {
+          background-color: #e3eff9;
+          backdrop-filter: blur(10px);
+          padding: 30px 20px;
+          text-align: center;
+          font-size: 28px;
+          font-weight: 600;
+          color: #2c3e50;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+          position: relative;
+          z-index: 3;
+        }
+        /* === Cards === */
+        .card {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+          padding: 30px;
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          height: 200px;
+          position: relative;
+          overflow: hidden;
+        }
+        .card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 5px;
+          background: linear-gradient(135deg, #4a90e2, #357ab8);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s ease;
+        }
+        .card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .card:hover::before {
+          transform: scaleX(1);
+        }
+        .card a {
+          font-size: 20px;
+          font-weight: 500;
+          color: #2c3e50;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          justify-content: center;
+        }
+        .card a:hover {
+          color: #3498db;
+        }
+        .card a::before {
+          font-size: 46px;
+          margin-bottom: 15px;
+          transition: transform 0.3s ease;
+        }
+        .card:hover a::before {
+          transform: scale(1.2);
+        }
+    
+        /* Main Content */
+        .main-content-container {
+            flex: 1;
+            position: relative;
+            margin-left: 250px; /* Match sidebar width */
+            min-height: 100vh;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: calc(100% - 250px);
+            height: 100%;
+            top: 0;
+            left: 250px;
+            z-index: 0;
+            background-color: white;
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: lavender;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        /* Page Content */
+        .page {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* Hide Pages */
+        .hidden {
+            display: none;
+        }
+        
+        /* Empty Dashboard Message */
+        .empty-message {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile-image" onclick="showProfile()">👤</div>
+        <h2>StartupX</h2>
+        <ul>
+            <li onclick="showPage('home')">🏠 Home</li>
+            <li onclick="showPage('dashboard')">📊 Dashboard</li>
+        </ul>
+        <div class="logout-btn" onclick="logout()">🚪 Sign Out</div>
+    </div>
+
+    <div class="main-content-container">
+        <div id="particles-js"></div>
+        <div class="main-content">
+            <header>
+                <h1 id="page-title">Dashboard</h1>
+            </header>
+
+            <section id="home" class="page hidden">
+                <h2>🏠 Welcome to StartupX</h2>
+                <p>StartupX is your ultimate mentorship and networking platform for entrepreneurs and mentors.</p>
+                <p>🚀 Entrepreneurs can:</p>
+                <ul>
+                    <li>📌 Manage their profile & settings</li>
+                    <li>👨‍🏫 Discover and book mentors</li>
+                    <li>💬 Communicate via chat & video calls</li>
+                    <li>📚 Store insights in the Failure Vaults</li>
+                    <li>📈 Track progress & get feedback</li>
+                </ul>
+                <p>🎓 Mentors:</p>
+                <ul>
+                    <li>📌 Set up their profile & settings</li>
+                    <li>👨‍🏫 Connect with entrepreneurs</li>
+                    <li>💬 Communicate & provide mentorship</li>
+                    <li>📊 Engage with insights & analytics</li>
+                    <li>🏅 Earn recognition & rewards</li>
+                    <li>📚 Contribute to the Failure Vaults</li>
+                </ul>
+            </section>
+            
+            <section id="dashboard" class="page">
+                <h2>📊 Dashboard</h2>
+                <div class="container">
+                  <div class="card">
+                    <a href="booked-calls/">📅 View Booked Calls</a>
+                  </div>
+                  
+                  <div class="card">
+                    <a href="#">🛠️ Manage Availability</a>
+                  </div>
+                  
+                  <div class="card">
+                    <a href="view-requests/">📞 View Call Requests</a>
+                  </div>
+              
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Load particles.js library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Initialize particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 60,
+                        "density": {
+                            "enable": true,
+                            "value_area": 80
+                        }
+                    },
+                    "color": {
+                        "value": "#3498db"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": true,
+                        "anim": {
+                            "enable": true,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": true,
+                            "speed": 2,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#3498db",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 1,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 0.8
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 4,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+
+            // Update particles canvas size when window resizes
+            window.addEventListener('resize', function() {
+                if (window.pJSDom && window.pJSDom.length > 0) {
+                    window.pJSDom[0].pJS.fn.vendors.destroypJS();
+                    window.pJSDom[0].pJS.fn.vendors.init();
+                }
+            });
+        });
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(el => el.classList.add('hidden'));
+            document.getElementById(page).classList.remove('hidden');
+            document.getElementById("page-title").innerText = 
+                page.charAt(0).toUpperCase() + page.slice(1);
+        }
+
+        function showProfile() {
+            alert("Profile page would open here");
+        }
+
+        function speakMessage(message) {
+            const speech = new SpeechSynthesisUtterance(message);
+            speech.lang = "en-US";  
+            speech.volume = 1;    
+            speech.rate = 1;       
+            speech.pitch = 1;       
+            window.speechSynthesis.speak(speech);
+        }
+
+        function logout() {
+            speakMessage("You are signing out. Have a great day!");
+            setTimeout(() => {
+                alert("Signing out...");
+                window.location.href = "{% url 'home'%}"; 
+            }, 2000); 
+        }
+    </script>
+</body>
+</html>

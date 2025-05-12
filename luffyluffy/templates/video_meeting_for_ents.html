@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Meeting Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      color: #7f8c8d;
+      margin-bottom: 25px;
+    }
+    
+    .btn {
+      display: inline-block;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin: 10px;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-secondary {
+      background-color: #ecf0f1;
+      color: #2c3e50;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      margin-bottom: 20px;
+      width: 100px;
+      height: 100px;
+      background-color: #3498db;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 20px;
+    }
+    
+    .logo svg {
+      width: 60px;
+      height: 60px;
+      fill: white;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #95a5a6;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1 17l-5-5 1.41-1.41 3.59 3.59 7.59-7.59 1.41 1.41-9 9z"/>
+      </svg>
+    </div>
+    
+    <h1>Join Virtual Meeting</h1>
+    <p>Connect with others through our secure video conferencing platform</p>
+    
+    <input type="text" id="roomInput" placeholder="Enter room name (optional)" />
+    
+    <button onclick="joinMeeting()" class="btn btn-primary">
+      Join Meeting Now
+    </button>
+    
+    <a href="{% url 'bookedcallsents' %}"  class="btn btn-secondary">
+      Go Back to bookings
+    </a>
+    
+    <div class="footer">
+      <p>Need help? Contact startupconnect8@gmail.com</p>
+    </div>
+  </div>
+  
+  <script>
+    function joinMeeting() {
+      let roomName = document.getElementById('roomInput').value.trim();
+      if (!roomName) {
+        // Generate a random room name if none is provided
+        roomName = "{{ room_name }}";
+
+      }
+      
+      // Remove any spaces and special characters from the room name
+      
+      
+      const meetingURL = `https://meet.jit.si/${roomName}`;
+      window.open(meetingURL, '_blank');
+    }
+  </script>
+</body>
+</html>
