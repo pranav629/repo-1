@@ -6,6 +6,8 @@ import random,string
 from newspaper import Article
 from datetime import datetime, timedelta
 from luffyluffy.tasks import send_reminder_email
+import cloudinary.uploader
+
 # Create your views here.
 
 from firebase_admin import firestore
@@ -52,6 +54,7 @@ def mentor(request):
         return render(request,'mentor_dashboard.html')
      else:
         return render(request, 'mentor.html')
+     
 def investor(request):
      if request.method == 'POST':
         # Get form data
@@ -83,16 +86,20 @@ def investor(request):
         return render(request,'investor_dashboard.html')
      else:
         return render(request, 'investor.html')
+     
 def redirectments(request):
-   return redirect('mlogin')
+   return redirect('mlogin'
+                   )
 def redirectinvests(request):
    return redirect('ilogin')
+
 def redirectents(request):
      return redirect('entlogin')
+
+
 def entrepreneur(request):
     
     if request.method == 'POST':
-        print('Yes')
         full_name = request.POST.get('fullName')
         startup_name = request.POST.get('startupName')
         email = request.POST.get('email')
@@ -125,7 +132,10 @@ def entrepreneur(request):
 
         db.collection('AvailableEntrepreneurs').document(email).set(data)
         request.session['user']=email
-        return render(request,'entrepreneur_dashboard.html')
+        user_doc = db.collection('AvailableEntrepreneurs').document('user').get()
+        details = user_doc.to_dict()
+
+        return render(request,'entrepreneur_dashboard.html',{'details':details,'now':timezone.now()})
     return render(request, 'index.html')  # Your form template
  
           
@@ -236,22 +246,32 @@ def investor_signup(request):
           
 
 def entrepreneur_login(request):
-     if request.method=='POST':
-          ents=db.collection('AvailableEntrepreneurs').get()
-          email=request.POST.get('email')
-          password=request.POST.get('password')
-          visited=False
-          for i in ents:
+    if request.method=='POST':
+            ents=db.collection('AvailableEntrepreneurs').get()
+            email=request.POST.get('email')
+            password=request.POST.get('password')
+            visited=False
+            for i in ents:
                if (i.to_dict()['email']==email):
                     if (i.to_dict()['password']==password):
-                         visited=True
-                         request.session['user']=email
-                         return render(request,'entrepreneur_dashboard.html')
+                        visited=True
+                        request.session['user']=email
+                        doc_id = i.id  # capture correct document ID
+                        request.session['user'] = email
+                        break  # login successful, break loop
                     else:
                          return render(request,'entrepreneur_login.html',{'message':'The password is incorrect','email':email})
-          if visited==False:
+            if visited and doc_id:
+                user_doc = db.collection('AvailableEntrepreneurs').document(doc_id).get()
+                details = user_doc.to_dict()
+
+                return render(request, 'entrepreneur_dashboard.html', {
+                'details': details,
+                'now': timezone.now()
+            })
+            if visited==False:
                return render(request,'entrepreneur_login.html',{'message':'email or password incorrect','email':email} )  
-     return render(request, 'entrepreneur_login.html')
+    return render(request, 'entrepreneur_login.html')
 
 def terms(request):
      return render(request,'terms.html')
@@ -540,7 +560,7 @@ def video_meeting_for_ents(request, room_name):
     # If meeting time has arrived, render the meeting room
     return render(request, 'video_meeting_for_ents.html', {'room_name': room_name})
 def entrepreneurdashboard(request):
-     return render (request,'entrepreneur_dashboard.html')
+     return render (request,'entrepreneur_dashboard.html',{'details':db.collection('AvailableEntrepreneurs').document(request.session['user']).get().to_dict(),'now':timezone.now()})
 def redirectentrepreneurstocallbooking(request):
      return redirect ('bookmentors')
 def redirectentstoviewcalls(request):
@@ -856,26 +876,68 @@ def video_meeting_for_ents_investors(request,room_name):
      
     # If meeting time has arrived, render the meeting room
     return render(request, 'video_meeting_for_ents_investors.html', {'room_name': room_name})
+
 def entprofile(request):
     return render(request,'profiles_ents.html',{'details':db.collection('AvailableEntrepreneurs').document(request.session['user']).get().to_dict()})
+
+
+# edit the profile
+
+
+cloudinary.config(
+    cloud_name='dwkhrkma3',
+    api_key='896827293138135',
+    api_secret='ZavpuZf6Yi_x-T5kQHx_JyLlNzM',
+)
+
 def editentprofile(request):
     if request.method=='POST':
+        user_id = request.session.get('user')
+        user_ref = db.collection('AvailableEntrepreneurs').document(user_id)
+
+        uploaded_image = request.FILES.get('image')
+        remove_image = request.POST.get('remove_image')
+        profile_image_url =None
+
+        if remove_image == 'on':  # Checkbox was selected
+            # Optionally, delete the image from Cloudinary if you store the public_id in Firestore.
+            profile_image_url = None  #
+        elif uploaded_image:
+            # Upload to Cloudinary
+            upload_result = cloudinary.uploader.upload(
+                uploaded_image,
+                folder=f'profile_images/{user_id}/'
+            )
+            profile_image_url = upload_result.get('secure_url')
+
+        else:
+            # Keep existing image if neither uploaded nor removed
+            profile_image_url = user_ref.get().to_dict().get('profile_image_url')
+
+
+
         data={
             'name':request.POST.get('name'),
             'email':request.POST.get('email'),
             'password':db.collection('AvailableEntrepreneurs').document(request.session['user']).get().to_dict()['password'],
-            
+            'qualification':request.POST.get('qualification'),
+            'languages': request.POST.get('languages'), 
             'description':request.POST.get('desc'),
             'city':request.POST.get('city'),
             'state':request.POST.get('state'),
             'industry':request.POST.get('industry'),
             'team_size':request.POST.get('teamsize'),
             'startup_name':request.POST.get('stname'),
-            'phone':request.POST.get('phone')
+            'phone':request.POST.get('phone'),
+            'profile_image_url': profile_image_url
         }
         db.collection('AvailableEntrepreneurs').document(request.session['user']).update(data)
         return redirect('entprofile')
     return HttpResponse('You can now edit your profile details')
+
+
+
+
 from django.http import JsonResponse
 def fetch_article(request):
     url = request.GET.get('url')
@@ -890,6 +952,7 @@ def fetch_article(request):
         return JsonResponse({'error': str(e)}, status=500)
 def surveyform(request):
     return render(request,'survey1.html')
+
 def surveyform1(request):
     if request.method=='POST':
         name=request.POST.get('title')
@@ -932,6 +995,7 @@ StartUp Connect Team
 
 
     return render(request,'survey2.html')
+
 def mentorrating(request,room_name):
     print(room_name)    
     if request.method == 'POST':

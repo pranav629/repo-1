@@ -68,8 +68,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'luffyluffy',
     'django_celery_beat',
+    'cloudinary',
+    'cloudinary_storage',
     
 ]
+
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -154,3 +157,13 @@ STATIC_URL = 'luffyluffy/static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dwkhrkma3',
+    'API_KEY': '896827293138135',
+    'API_SECRET': 'ZavpuZf6Yi_x-T5kQHx_JyLlNzM',
+}
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

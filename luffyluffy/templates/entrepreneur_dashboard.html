@@ -214,11 +214,52 @@
             color: #666;
             font-size: 18px;
         }
+
+
+    /*profile image*/
+
+    .profile-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: #eee;
+    border-radius: 50%;
+    font-size: 20px;
+    overflow: hidden;
+    object-fit: cover;
+    object-position: center;
+}
+
+.profile-image img {
+    object-fit: cover;
+}
+
+.profile-image.default-icon {
+    font-size: 22px;
+    color: #666;
+}
+
+
+
+
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <a href="{% url 'entprofile'%}"><div class="profile-image" >👤</div></a>
+    
+        {% if details.profile_image_url %}   <!-- profile image dashboard-->
+            <div class="profile-image">
+            <a href="{% url 'entprofile' %}">
+                <img src="{{ details.profile_image_url }}?v={{ now|date:'U' }}" alt="Profile Image" >
+            </a>
+        </div>
+        {% else %}
+            <div class="profile-image default-icon">
+                <a href="{% url 'entprofile' %}">👤</a>
+            </div>
+        {% endif %}
         <h2>StartupX</h2>
         <ul>
             <li onclick="showPage('home')">🏠 Home</li>

@@ -81,6 +81,38 @@
     .checkbox-item input {
       margin-right: 5px;
     }
+.remove-image-btn {
+    background-color: #ff4d4d;     /* Soft red */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+/* Hover effect */
+.remove-image-btn:hover {
+    background-color: #e60000;
+    transform: scale(1.05);
+}
+
+/* Disabled state styling */
+.remove-image-btn.disabled,
+.remove-image-btn[disabled] {
+    background-color: #d3d3d3;     /* Light grey */
+    color: #888;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;               /* No hover transform */
+    text-decoration: none;
+}
+
 
     .buttons {
       text-align: center;
@@ -127,9 +159,24 @@
 
   <div class="container">
     <h2>🚀 Startup Profile</h2>
-    <form id="profileForm" method='POST' action="edit/">
+    <form id="profileForm" method='POST' action="edit/" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="profile-section">
+
+        <!-- Profile Image -->
+        {% if details.profile_image_url %}
+        <img src="{{ details.profile_image_url }}" width="150">
+        <!-- Button to remove image -->
+         <br>
+        <a href="#" id="removeImageLink" onclick="removeImage()" class="remove-image-btn">Remove Image</a>
+        <!-- Hidden checkbox for image removal -->
+        <input type="checkbox" name="remove_image" id="remove_image" style="display:none;" diasabled>
+        {% endif %}
+
+
+
+        <label>Upload New Image:</label>
+        <input type="file" name="image" accept="image/*" disabled>
         <label>Full Name</label>
         <input type="text" value="{{details.name}}" disabled name='name'/>
 
@@ -143,7 +190,7 @@
         <input type="tel" value="{{details.phone}}" disabled name='phone' />
 
         <label>Qualification</label>
-        <input type="text" value="{{details.qualification}}" disabled name='quali'/>
+        <input type="text" value="{{details.qualification}}" disabled name='qualification'/>
 
         <label>Startup Description</label>
         <textarea rows="3" disabled  name='desc'>{{details.description}}</textarea>
@@ -155,15 +202,25 @@
         <input type="text" name='city' value="{{details.city}}" disabled />
 
         <label>Availability</label>
-         {% for i in details.availability%}
-          <input type="text"  name='Availability'value="{{i}}" disabled />
-        {%endfor%}
+        {% if details.availability %}  <!--if availability is empty-->  <!--edited-->
+            {% for i in details.availability%}
+               <input type="text"  name='Availability'value="{{i}}" disabled />
+             {%endfor%}
+        {% else %}           <!--edited-->
+             <input type="text" name="Availability" disabled placeholder="Enter Availability" />
+        {% endif %}             <!--edited-->
+
 
         <label>Languages Spoken</label>
         
-       {% for i in details.languages%}
-          <input type="text" value="{{i}}" disabled />
-        {%endfor%}
+      {% if details.languages %}  <!--if lang is empty-->
+                <input type="text"  name="languages" value="{{details.languages}}" disabled />
+        {% else %} <!--edited-->
+              <input type="text" name="languages" disabled placeholder="Enter language" />
+        {% endif %} <!--edited-->
+
+
+
         <label>Industry</label>
         <input type="text" value="{{details.industry}}" disabled name='industry'/>
 
@@ -176,6 +233,7 @@
         <button type="submit" style="display:none;">💾 Save</button>
       </div>
     </form>
+    <a href="{% url 'entrepreneur_dashboard' %}" >Back to Dashboard</a>
   </div>
 
   <!-- Particle JS -->
@@ -266,6 +324,15 @@
       inputs.forEach(el => el.disabled = false);
       saveBtn.style.display = 'inline-block';
     }
+    function removeImage() {
+    // Check the hidden checkbox
+    document.getElementById('remove_image').checked = true;
+
+    // Disable the button visually and functionally
+    const btn = document.getElementById('removeImageLink');
+    btn.classList.add('disabled');
+    btn.setAttribute('disabled', 'disabled');
+}
   </script>
 </body>
 </html>
