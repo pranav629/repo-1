@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # Initialize Firebase Admin
-cred = credentials.Certificate(r'C:\Users\MOHAN\Documents\django\luffy\firebae-adminsdk.json')
+cred = credentials.Certificate('firebae-adminsdk.json')
  # assuming firebase_key.json is in same folder
 firebase_admin.initialize_app(cred)
 

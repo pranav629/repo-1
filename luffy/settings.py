@@ -16,7 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'C://Users//MOHAN//Documents//django//luffy//firebae-adminsdk.json'
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'firebae-adminsdk.json'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -45,7 +45,7 @@ ALLOWED_HOSTS = []
 from firebase_admin import credentials,initialize_app
 import firebase_admin
 if not firebase_admin._apps:
- cred=credentials.Certificate('C://Users//MOHAN//Documents//django//luffy//firebae-adminsdk.json')
+ cred=credentials.Certificate('firebae-adminsdk.json')
  db=initialize_app(cred)
 # Application definition
 # Celery Configuration
