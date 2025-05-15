@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Startup Profile</title>
@@ -81,37 +82,41 @@
     .checkbox-item input {
       margin-right: 5px;
     }
-.remove-image-btn {
-    background-color: #ff4d4d;     /* Soft red */
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    display: inline-block;
-    transition: background-color 0.3s, transform 0.2s;
-    cursor: pointer;
-    margin-top: 8px;
-}
 
-/* Hover effect */
-.remove-image-btn:hover {
-    background-color: #e60000;
-    transform: scale(1.05);
-}
+    .remove-image-btn {
+      background-color: #ff4d4d;
+      /* Soft red */
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      display: inline-block;
+      transition: background-color 0.3s, transform 0.2s;
+      cursor: pointer;
+      margin-top: 8px;
+    }
 
-/* Disabled state styling */
-.remove-image-btn.disabled,
-.remove-image-btn[disabled] {
-    background-color: #d3d3d3;     /* Light grey */
-    color: #888;
-    cursor: not-allowed;
-    pointer-events: none;
-    transform: none;               /* No hover transform */
-    text-decoration: none;
-}
+    /* Hover effect */
+    .remove-image-btn:hover {
+      background-color: #e60000;
+      transform: scale(1.05);
+    }
+
+    /* Disabled state styling */
+    .remove-image-btn.disabled,
+    .remove-image-btn[disabled] {
+      background-color: #d3d3d3;
+      /* Light grey */
+      color: #888;
+      cursor: not-allowed;
+      pointer-events: none;
+      transform: none;
+      /* No hover transform */
+      text-decoration: none;
+    }
 
 
     .buttons {
@@ -150,11 +155,102 @@
         padding: 20px;
       }
     }
+
+    /*circle preview*/
+    .circle-preview {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+      border: 2px solid #ccc;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-pic-container {
+      position: relative;
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ccc;
+      cursor: pointer;
+    }
+
+    .edit-icon {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      width: 25px;
+      height: 25px;
+      font-size: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #cropModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #cropBox {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cropper-container-wrapper {
+      width: 100%;
+      max-width: 400px;
+      height: 400px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cropper-container-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
   </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
+
 <body>
 
-  <!-- Particle Background -->
   <div id="particles-js"></div>
 
   <div class="container">
@@ -163,37 +259,36 @@
       {% csrf_token %}
       <div class="profile-section">
 
-        <!-- Profile Image -->
-        {% if details.profile_image_url %}
-        <img src="{{ details.profile_image_url }}" width="150">
-        <!-- Button to remove image -->
-         <br>
-        <a href="#" id="removeImageLink" onclick="removeImage()" class="remove-image-btn">Remove Image</a>
-        <!-- Hidden checkbox for image removal -->
-        <input type="checkbox" name="remove_image" id="remove_image" style="display:none;" diasabled>
-        {% endif %}
+        <div class="profile-container">
+          <div class="profile-pic-container">
+            <img id="profilePic" src="{{ details.profile_image_url|default:'https://via.placeholder.com/100' }}"
+              alt="Profile" class="profile-pic">
+            <div class="edit-icon" onclick="document.getElementById('fileInput').click()">✎</div>
+          </div>
+          <input type="file" id="fileInput" name="image" accept="image/*" style="display:none;" disabled>
+        </div>
 
-
-
-        <label>Upload New Image:</label>
-        <input type="file" name="image" accept="image/*" disabled>
+        <input type="checkbox" name="remove_image" id="remove_image" style="display:none;">
+        <a href="#" id="removeImageLink" onclick="removeImage()" class="remove-image-btn" style="display:none;">Remove
+          Image</a>
+        <input type="hidden" id="croppedImageData" name="cropped_image_data">
         <label>Full Name</label>
-        <input type="text" value="{{details.name}}" disabled name='name'/>
+        <input type="text" value="{{details.name}}" disabled name='name' />
 
         <label>Startup Name</label>
         <input type="text" value="{{details.startup_name}}" disabled name='stname' />
 
         <label>Email</label>
-        <input type="email" value="{{details.email}}" disabled name='email'/>
+        <input type="email" value="{{details.email}}" disabled name='email' />
 
         <label>Phone Number</label>
         <input type="tel" value="{{details.phone}}" disabled name='phone' />
 
         <label>Qualification</label>
-        <input type="text" value="{{details.qualification}}" disabled name='qualification'/>
+        <input type="text" value="{{details.qualification}}" disabled name='qualification' />
 
         <label>Startup Description</label>
-        <textarea rows="3" disabled  name='desc'>{{details.description}}</textarea>
+        <textarea rows="3" disabled name='desc'>{{details.description}}</textarea>
 
         <label>State</label>
         <input type="text" name='state' value="{{details.state}}" disabled />
@@ -202,30 +297,26 @@
         <input type="text" name='city' value="{{details.city}}" disabled />
 
         <label>Availability</label>
-        {% if details.availability %}  <!--if availability is empty-->  <!--edited-->
-            {% for i in details.availability%}
-               <input type="text"  name='Availability'value="{{i}}" disabled />
-             {%endfor%}
-        {% else %}           <!--edited-->
-             <input type="text" name="Availability" disabled placeholder="Enter Availability" />
-        {% endif %}             <!--edited-->
-
+        {% if details.availability %}
+        {% for i in details.availability %}
+        <input type="text" name='Availability' value="{{i}}" disabled />
+        {% endfor %}
+        {% else %}
+        <input type="text" name="Availability" disabled placeholder="Enter Availability" />
+        {% endif %}
 
         <label>Languages Spoken</label>
-        
-      {% if details.languages %}  <!--if lang is empty-->
-                <input type="text"  name="languages" value="{{details.languages}}" disabled />
-        {% else %} <!--edited-->
-              <input type="text" name="languages" disabled placeholder="Enter language" />
-        {% endif %} <!--edited-->
-
-
+        {% if details.languages %}
+        <input type="text" name="languages" value="{{details.languages}}" disabled />
+        {% else %}
+        <input type="text" name="languages" disabled placeholder="Enter language" />
+        {% endif %}
 
         <label>Industry</label>
-        <input type="text" value="{{details.industry}}" disabled name='industry'/>
+        <input type="text" value="{{details.industry}}" disabled name='industry' />
 
         <label>Team Size</label>
-        <input type="text" value="{{details.team_size}}" disabled  name='teamsize'/>
+        <input type="text" value="{{details.team_size}}" disabled name='teamsize' />
       </div>
 
       <div class="buttons">
@@ -233,11 +324,21 @@
         <button type="submit" style="display:none;">💾 Save</button>
       </div>
     </form>
-    <a href="{% url 'entrepreneur_dashboard' %}" >Back to Dashboard</a>
+    <a href="{% url 'entrepreneur_dashboard' %}">Back to Dashboard</a>
   </div>
 
-  <!-- Particle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <div id="cropModal">
+    <div id="cropBox">
+      <div class="cropper-container-wrapper">
+        <img id="imageToCrop" src="">
+      </div>
+      <div>
+        <button type="button" onclick="cropImage()">Crop & Save</button>
+        <button type="button" class="cancel" onclick="closeCropModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     particlesJS('particles-js', {
       "particles": {
@@ -317,22 +418,74 @@
       "retina_detect": true
     });
 
-    function enableEdit() {
-      const form = document.getElementById('profileForm');
-      const inputs = form.querySelectorAll('input, textarea');
-      const saveBtn = form.querySelector('button[type="submit"]');
-      inputs.forEach(el => el.disabled = false);
-      saveBtn.style.display = 'inline-block';
-    }
-    function removeImage() {
-    // Check the hidden checkbox
-    document.getElementById('remove_image').checked = true;
+    let cropper;
 
-    // Disable the button visually and functionally
-    const btn = document.getElementById('removeImageLink');
-    btn.classList.add('disabled');
-    btn.setAttribute('disabled', 'disabled');
-}
+    document.getElementById('fileInput').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+          const image = document.getElementById('imageToCrop');
+          image.src = evt.target.result;
+          document.getElementById('cropModal').style.display = 'flex';
+
+          image.onload = () => {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(image, {
+              aspectRatio: 1,
+              viewMode: 1,
+              autoCropArea: 1,
+              responsive: true,
+              movable: true,
+              zoomable: true,
+              dragMode: 'move'
+            });
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function cropImage() {
+      const croppedCanvas = cropper.getCroppedCanvas({
+        width: 800,
+        height: 800,
+      });
+      const croppedImage = croppedCanvas.toDataURL('image/png');
+      document.getElementById('profilePic').src = croppedImage;
+      document.getElementById('croppedImageData').value = croppedImage; // Set the hidden input value
+      closeCropModal();
+    }
+
+    function closeCropModal() {
+      document.getElementById('cropModal').style.display = 'none';
+      if (cropper) cropper.destroy();
+    }
+
+    function enableEdit() {
+      document.querySelectorAll('#profileForm input, #profileForm textarea').forEach(el => {
+        el.disabled = false;
+      });
+      document.querySelector('#profileForm button[type="submit"]').style.display = 'inline-block';
+      document.getElementById('removeImageLink').style.display = 'inline-block';
+      document.getElementById('fileInput').disabled = false; // Enable file input on edit
+    }
+
+    function removeImage() {
+      document.getElementById('profilePic').src = 'https://via.placeholder.com/100';
+      document.getElementById('remove_image').checked = true;
+    }
+
+    // Add an event listener to the form to ensure cropped data is sent on submit
+    document.getElementById('profileForm').addEventListener('submit', function (event) {
+      if (!document.getElementById('croppedImageData').value && document.getElementById('fileInput').files.length > 0) {
+        // If a new file is selected but not cropped, you might want to handle this.
+        // For now, we'll rely on the cropped data. You could add a warning or automatically crop.
+        // console.warn("New image selected but not cropped.");
+      }
+    });
   </script>
+
 </body>
+
 </html>

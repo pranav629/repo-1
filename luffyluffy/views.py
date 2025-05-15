@@ -7,9 +7,9 @@ from newspaper import Article
 from datetime import datetime, timedelta
 from luffyluffy.tasks import send_reminder_email
 import cloudinary.uploader
-
+from django.core.files.base import ContentFile
 # Create your views here.
-
+import base64
 from firebase_admin import firestore
 from datetime import datetime, timedelta
   # Required if timestamps are in UTC
@@ -891,50 +891,57 @@ cloudinary.config(
 )
 
 def editentprofile(request):
-    if request.method=='POST':
+    if request.method == 'POST':
         user_id = request.session.get('user')
         user_ref = db.collection('AvailableEntrepreneurs').document(user_id)
-
-        uploaded_image = request.FILES.get('image')
+        uploaded_image = request.POST.get('cropped_image_data')
         remove_image = request.POST.get('remove_image')
-        profile_image_url =None
+        profile_image_url = None
 
         if remove_image == 'on':  # Checkbox was selected
             # Optionally, delete the image from Cloudinary if you store the public_id in Firestore.
-            profile_image_url = None  #
+            profile_image_url = None
         elif uploaded_image:
-            # Upload to Cloudinary
-            upload_result = cloudinary.uploader.upload(
-                uploaded_image,
-                folder=f'profile_images/{user_id}/'
-            )
-            profile_image_url = upload_result.get('secure_url')
+            try:
+                # 1. Convert Data URL to image file
+                format, imgstr = uploaded_image.split(';base64,')
+                ext = format.split('/')[-1]
+                data = base64.b64decode(imgstr)
+                image_file = ContentFile(data, name=f'profile_image.{ext}')
+
+                # 2. Upload to Cloudinary
+                upload_result = cloudinary.uploader.upload(
+                    image_file,
+                    folder=f'profile_images/{user_id}/'
+                )
+                profile_image_url = upload_result.get('secure_url')
+            except Exception as e:
+                # Handle potential errors during conversion or upload
+                print(f"Error uploading image: {e}")
+                return HttpResponse("Error processing image", status=500)
 
         else:
             # Keep existing image if neither uploaded nor removed
             profile_image_url = user_ref.get().to_dict().get('profile_image_url')
 
-
-
-        data={
-            'name':request.POST.get('name'),
-            'email':request.POST.get('email'),
-            'password':db.collection('AvailableEntrepreneurs').document(request.session['user']).get().to_dict()['password'],
-            'qualification':request.POST.get('qualification'),
-            'languages': request.POST.get('languages'), 
-            'description':request.POST.get('desc'),
-            'city':request.POST.get('city'),
-            'state':request.POST.get('state'),
-            'industry':request.POST.get('industry'),
-            'team_size':request.POST.get('teamsize'),
-            'startup_name':request.POST.get('stname'),
-            'phone':request.POST.get('phone'),
+        data = {
+            'name': request.POST.get('name'),
+            'email': request.POST.get('email'),
+            'password': db.collection('AvailableEntrepreneurs').document(request.session['user']).get().to_dict()['password'],
+            'qualification': request.POST.get('qualification'),
+            'languages': request.POST.get('languages'),
+            'description': request.POST.get('desc'),
+            'city': request.POST.get('city'),
+            'state': request.POST.get('state'),
+            'industry': request.POST.get('industry'),
+            'team_size': request.POST.get('teamsize'),
+            'startup_name': request.POST.get('stname'),
+            'phone': request.POST.get('phone'),
             'profile_image_url': profile_image_url
         }
         db.collection('AvailableEntrepreneurs').document(request.session['user']).update(data)
         return redirect('entprofile')
     return HttpResponse('You can now edit your profile details')
-
 
 
 

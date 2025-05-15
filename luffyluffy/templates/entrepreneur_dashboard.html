@@ -222,8 +222,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background-color: #eee;
     border-radius: 50%;
     font-size: 20px;
@@ -240,6 +240,13 @@
     font-size: 22px;
     color: #666;
 }
+.profile-pic {
+  width: 100px; /* Adjust the size as needed */
+  height: 100px; /* Make sure width and height are the same for a perfect circle */
+  border-radius: 50%; /* This is the key for the circular shape */
+  object-fit: cover; /* Ensures the image covers the circle without distortion */
+  border: 2px solid #ccc; /* Optional: Adds a border around the circle */
+}
 
 
 
@@ -252,7 +259,7 @@
         {% if details.profile_image_url %}   <!-- profile image dashboard-->
             <div class="profile-image">
             <a href="{% url 'entprofile' %}">
-                <img src="{{ details.profile_image_url }}?v={{ now|date:'U' }}" alt="Profile Image" >
+                <img src="{{ details.profile_image_url }}?v={{ now|date:'U' }}" alt="Profile Image" class="profile-pic" >
             </a>
         </div>
         {% else %}
